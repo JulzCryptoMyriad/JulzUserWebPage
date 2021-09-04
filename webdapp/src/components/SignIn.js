@@ -1,4 +1,4 @@
-import '../App.css';
+import '../assets/css/App.css';
 import BSButton from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react'

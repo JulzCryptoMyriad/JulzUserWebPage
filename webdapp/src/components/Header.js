@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar, Nav, NavDropdown, Container}  from 'react-bootstrap';
-import '../App.css';
+import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react'
 
