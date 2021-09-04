@@ -10,16 +10,16 @@ export default class Header extends Component {
                 <div className="App">
                     <Navbar bg="light" expand="lg">
                     <Container>
-                        <Navbar.Brand className="Brand" href="#home">Julz</Navbar.Brand>
+                        <Navbar.Brand className="Brand" href="/">Julz</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                             <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="me-auto">
-                            <Nav.Link href="#Home">Home</Nav.Link>
-                            <Nav.Link href="#Docs">Docs</Nav.Link>                                                     
-                            <Nav.Link href="#About">About Us</Nav.Link>  
+                            <Nav.Link href="/">Home</Nav.Link>
+                            <Nav.Link href="/Docs">Docs</Nav.Link>                                                     
+                            <Nav.Link href="/About">About Us</Nav.Link>  
                         </Nav>                          
-                        <Nav.Link href="#SignUp" className="justify-content-end">Sign Up</Nav.Link>                            
-                        <Nav.Link href="#SignIn" className="justify-content-end">Sign In</Nav.Link> 
+                        <Nav.Link href="/SignUp" className="justify-content-end">Sign Up</Nav.Link>                            
+                        <Nav.Link href="/SignIn" className="justify-content-end">Sign In</Nav.Link> 
                         </Navbar.Collapse>
                     </Container>
                     </Navbar>

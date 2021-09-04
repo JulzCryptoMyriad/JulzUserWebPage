@@ -45,3 +45,14 @@
     transform: rotate(360deg);
   }
 }
+
+.App-container {
+  padding-left: 20%;
+  padding-right: 20%;
+  padding-top: 5%;
+}
+
+.Sign-item {
+  margin-top: 3%;
+  align-items: left;
+}
