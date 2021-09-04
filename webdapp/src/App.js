@@ -8,6 +8,7 @@ import SignUp from "./components/SignUp.js";
 import SignIn from "./components/SignIn.js";
 import Docs from "./components/Docs.js";
 import About from "./components/About.js";
+import Dashboard from "./components/Dashboard.js";
 
 class App extends Component{
 
@@ -22,6 +23,7 @@ class App extends Component{
           <Route path="/SignIn" component={SignIn} />
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />
+          <Route path="/Dashboard" component={Dashboard} />
         </Switch>
       </BrowserRouter>
       </div>
