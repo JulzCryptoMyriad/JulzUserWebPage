@@ -1,5 +1,5 @@
 import '../assets/css/App.css';
-import {Navbar, Nav, NavDropdown, Container, Carousel}  from 'react-bootstrap';
+import {Carousel}  from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react'
 
@@ -11,7 +11,7 @@ export default class Home extends Component {
                         <Carousel.Item>
                             <img
                             className="d-block w-100"
-                            src="holder.js/800x400?text=First slide&bg=373940"
+                            src="../assets/imgs/coins.jpg"
                             alt="First slide"
                             />
                             <Carousel.Caption>
@@ -22,7 +22,7 @@ export default class Home extends Component {
                         <Carousel.Item>
                                 <img
                                 className="d-block w-100"
-                                src="holder.js/800x400?text=Second slide&bg=282c34"
+                                src="../assets/imgs/mocoins.jpg"
                                 alt="Second slide"
                                 />
 
@@ -34,7 +34,7 @@ export default class Home extends Component {
                         <Carousel.Item>
                                 <img
                                 className="d-block w-100"
-                                src="holder.js/800x400?text=Third slide&bg=20232a"
+                                src="../assets/imgs/ethcoin.jpg"
                                 alt="Third slide"
                                 />
 
