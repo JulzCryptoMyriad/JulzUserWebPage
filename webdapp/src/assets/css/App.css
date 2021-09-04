@@ -50,9 +50,11 @@
   padding-left: 20%;
   padding-right: 20%;
   padding-top: 5%;
+  text-align: left;
 }
 
 .Sign-item {
   margin-top: 3%;
   align-items: left;
+  text-align: left;
 }
