@@ -2,6 +2,15 @@
   text-align: center;
 }
 
+.Brand {
+  font-family: fantasy;
+  color: rgb(25, 216, 25);
+  font-weight: bold;
+}
+.justify-content-end {
+  justify-content: end;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
