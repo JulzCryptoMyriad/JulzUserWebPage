@@ -58,3 +58,6 @@
   align-items: left;
   text-align: left;
 }
+.center{
+  align-content: center;
+}
