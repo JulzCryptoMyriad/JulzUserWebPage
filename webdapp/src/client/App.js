@@ -11,16 +11,24 @@ import About from "../components/About.js";
 import Dashboard from "../components/Dashboard.js";
 
 class App extends Component{
+  state = {
+    logged : false,
+    userName : ""
+  }
+
+  onLog = () => {
+    this.setState({ logged: true })
+  }
 
   render(){
     return (
       <div className="App">
-       <Header />
+       <Header {...this.state}/>
        <BrowserRouter>
         <Switch>
           <Route exact  path="/" component={Home} />
-          <Route path="/SignUp" component={SignUp} />
-          <Route path="/SignIn" component={SignIn} />
+          <Route path="/SignUp" component={SignUp}/>        
+          <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />
           <Route path="/Dashboard" component={Dashboard} />
