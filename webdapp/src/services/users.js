@@ -62,7 +62,7 @@ function validateCreate(user) {
         message = true;
       }
     
-      return {message};
+      return {data};
 
   }
 

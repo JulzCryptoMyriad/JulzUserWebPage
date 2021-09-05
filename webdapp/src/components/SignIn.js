@@ -2,6 +2,7 @@ import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form,  Button} from 'react-bootstrap';
 import React, { Component } from 'react'
+import { withRouter } from 'react-router-dom';
 
 export default class SignIn extends Component {
     state = {
@@ -9,17 +10,25 @@ export default class SignIn extends Component {
         password : ""
       };
     
-      onSubmit = async () => {
-
+      onSubmit = async (e) => {
+        e.preventDefault()
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify( {email: this.state.email, password: this.state.password})
         };
 
-        fetch("/login", requestOptions)
-        .then(async (res) => await res.json())
-        .then((data) =>  console.log('res',data));
+        const result = await fetch("/login", requestOptions)
+        .then(data => data.json());
+
+        console.log('fetch result', await result.data.length);
+        if(result.data.length < 1){
+            console.log('not login');
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
+        }else{
+                    this.props.history.push('/Dashboard');
+        }         
       };
 
     render(){
@@ -41,7 +50,7 @@ export default class SignIn extends Component {
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                         <Form.Check type="checkbox" label="Check me out" />
                     </Form.Group>
-                    <Button variant="primary" type="submit" href="/Dashboard" onClick={this.onSubmit}>
+                    <Button variant="primary" type="submit" onClick={this.onSubmit.bind(this)}>
                         Log In
                     </Button>
                 </Form>
