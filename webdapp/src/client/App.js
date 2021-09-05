@@ -23,12 +23,12 @@ class App extends Component{
   render(){
     return (
       <div className="App">
-       <Header />
+       <Header {...this.state}/>
        <BrowserRouter>
         <Switch>
           <Route exact  path="/" component={Home} />
           <Route path="/SignUp" component={SignUp}/>        
-          <Route path="/SignIn" component={SignIn} />
+          <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />
           <Route path="/Dashboard" component={Dashboard} />

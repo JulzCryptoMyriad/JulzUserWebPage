@@ -2,9 +2,9 @@ import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form,  Button} from 'react-bootstrap';
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router';
 
-export default class SignIn extends Component {
+ class SignIn extends Component {
     state = {
         email : "",
         password : ""
@@ -27,7 +27,8 @@ export default class SignIn extends Component {
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         }else{
-                    this.props.history.push('/Dashboard');
+            this.props.onLog();
+            this.props.history.push('/Dashboard');
         }         
       };
 
@@ -59,3 +60,5 @@ export default class SignIn extends Component {
     }
 
 }
+
+export default withRouter(SignIn);
