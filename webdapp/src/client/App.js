@@ -1,14 +1,14 @@
-import './assets/css/App.css';
+import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Component } from 'react'
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
-import Header from "./components/Header.js";
-import Home from "./components/Home.js";
-import SignUp from "./components/SignUp.js";
-import SignIn from "./components/SignIn.js";
-import Docs from "./components/Docs.js";
-import About from "./components/About.js";
-import Dashboard from "./components/Dashboard.js";
+import Header from "../components/Header.js";
+import Home from "../components/Home.js";
+import SignUp from "../components/SignUp.js";
+import SignIn from "../components/SignIn.js";
+import Docs from "../components/Docs.js";
+import About from "../components/About.js";
+import Dashboard from "../components/Dashboard.js";
 
 class App extends Component{
 
