@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 
-contract RandomNumberConsumer{
+contract JulzPay{
     enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
 
     address payable private owner;
