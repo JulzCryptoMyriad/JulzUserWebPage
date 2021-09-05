@@ -22,3 +22,19 @@ app.get('/users', async (req, res) => {
     console.error(`Error while getting users `, err.message);
   }
 }); 
+
+app.post('/login', async (req, res) => { 
+  try {
+    res.json(await users.login(req.body));
+  } catch (err) {
+    console.error(`Error while login user `, err.message);
+  }
+}); 
+
+app.post('/create', async (req, res) => { 
+  try {
+    res.json(await users.create(req.body));
+  } catch (err) {
+    console.error(`Error while login user `, err.message);
+  }
+}); 

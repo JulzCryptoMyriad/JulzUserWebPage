@@ -13,8 +13,8 @@ async function create(user){
     validateCreate(user);
   
     const result = await db.query(
-      'INSERT INTO user (email, password, contractAddress, restriction, treasuryAddress) VALUES (?, ?, ?, ?, ?)', 
-      [user.email, user.password, user.contractAddress, user.restriction, user.treasuryAddress]
+      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"')", 
+      []
     );
   
     let message = 'Error in creating user';
@@ -52,14 +52,13 @@ function validateCreate(user) {
   }
 
   async function login(user){
-    const result = await db.query(
-        'select * from  user where email = ? and password = ?)', 
-        [user.email, user.password]
+    const data = await db.query(
+        "select * from  users where email = '"+user.email+"' and password = '"+user.password+"'", 
+        [ ]
       );
-    
       let message =  false;
     
-      if (result.affectedRows) {
+      if (data.length > 0) {
         message = true;
       }
     

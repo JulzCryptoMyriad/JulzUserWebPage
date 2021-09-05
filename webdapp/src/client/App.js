@@ -11,6 +11,14 @@ import About from "../components/About.js";
 import Dashboard from "../components/Dashboard.js";
 
 class App extends Component{
+  state = {
+    logged : false,
+    userName : ""
+  }
+
+  onLog = () => {
+    this.setState({ logged: true })
+  }
 
   render(){
     return (
@@ -19,7 +27,7 @@ class App extends Component{
        <BrowserRouter>
         <Switch>
           <Route exact  path="/" component={Home} />
-          <Route path="/SignUp" component={SignUp} />
+          <Route path="/SignUp" component={SignUp}/>        
           <Route path="/SignIn" component={SignIn} />
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />

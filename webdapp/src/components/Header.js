@@ -18,8 +18,9 @@ export default class Header extends Component {
                             <Nav.Link href="/Docs">Docs</Nav.Link>                                                     
                             <Nav.Link href="/About">About Us</Nav.Link>  
                         </Nav>                          
-                        <Nav.Link href="/SignUp" className="justify-content-end">Sign Up</Nav.Link>                            
-                        <Nav.Link href="/SignIn" className="justify-content-end">Sign In</Nav.Link> 
+                        <Nav.Link href="/SignUp" className="justify-content-end" >Sign Up</Nav.Link>                            
+                        <Nav.Link href="/SignIn" className="justify-content-end" >Sign In</Nav.Link> 
+                        <Nav.Link href="/SignOut" className="justify-content-end" >Sign Out</Nav.Link> 
                         </Navbar.Collapse>
                     </Container>
                     </Navbar>
