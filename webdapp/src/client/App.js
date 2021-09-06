@@ -13,11 +13,12 @@ import Dashboard from "../components/Dashboard.js";
 class App extends Component{
   state = {
     logged : false,
-    userName : ""
+    userId : ""
   }
 
-  onLog = () => {
+  onLog = (id) => {
     this.setState({ logged: true })
+    this.setState({ userId : id})
   }
 
   render(){
@@ -31,7 +32,7 @@ class App extends Component{
           <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />
-          {this.state.logged? <Route path="/Dashboard" component={Dashboard} />: <Route path="/Dashboard" component={Home}/>}
+          {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state}/>} />: <Route path="/Dashboard" component={Home}/>}
         </Switch>
       </BrowserRouter>
       </div>

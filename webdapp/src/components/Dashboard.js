@@ -41,7 +41,7 @@ import {
   ];
 
 export default class SignIn extends PureComponent {
-   
+
     render(){
             return (
             <div className="App-container">
@@ -89,6 +89,17 @@ export default class SignIn extends PureComponent {
                                 </Card.Body>
                             </Card>
                         </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <Card className="Sign-item">
+                          <Card.Body>
+                            The code to include your widget inside your page is: 
+                            <br/>
+                            <code>{`<iframe src="http://localhost:3000/`+ this.props.userId +`" ></iframe> `}</code>
+                          </Card.Body>
+                        </Card>
+                      </Col>
                     </Row>
                 </Container>
             </div>
