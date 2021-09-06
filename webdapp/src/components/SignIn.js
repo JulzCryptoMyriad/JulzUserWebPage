@@ -25,14 +25,14 @@ import { Link } from "react-router-dom";
         const result = await fetch("/login", requestOptions)
         .then(data => data.json());
 
-        console.log('fetch result', await result.data.length);
+        console.log('fetch result', await result.data);
         if(result.data.length < 1){
             console.log('not login');
             this.setState({ show: true })
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         }else{
-            this.props.onLog();
+            this.props.onLog(result.data[0].idusers);
             this.props.history.push('/Dashboard');
         }         
       };
