@@ -13,7 +13,7 @@ async function create(user){
     validateCreate(user);
   
     const result = await db.query(
-      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"')", 
+      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"')", 
       []
     );
   

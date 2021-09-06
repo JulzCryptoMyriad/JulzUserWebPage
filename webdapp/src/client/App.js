@@ -27,7 +27,7 @@ class App extends Component{
        <BrowserRouter>
         <Switch>
           <Route exact  path="/" component={Home} />
-          <Route path="/SignUp" component={SignUp}/>        
+          <Route path="/SignUp" render={() => <SignUp onLog ={this.onLog}/>}/>   
           <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />

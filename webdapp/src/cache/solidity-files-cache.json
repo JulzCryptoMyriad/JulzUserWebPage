@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\src\\contracts\\JulzPay.sol": {
-      "lastModificationDate": 1630886298170,
-      "contentHash": "85f7801f0d5f1c91aeb60aed7c403d99",
+      "lastModificationDate": 1630948147904,
+      "contentHash": "24f9411352445da12095ba7afb70d205",
       "sourceName": "src/contracts/JulzPay.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -34,6 +34,7 @@
         "^0.8.7"
       ],
       "artifacts": [
+        "IERC20",
         "JulzPay"
       ]
     },
