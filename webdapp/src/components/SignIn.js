@@ -1,15 +1,18 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form,  Button} from 'react-bootstrap';
+import {Form,  Button, Overlay } from 'react-bootstrap';
 import React, { Component } from 'react'
 import { withRouter } from 'react-router';
 
  class SignIn extends Component {
     state = {
         email : "",
-        password : ""
+        password : "",
+        show: false,
+        target : {}
       };
-    
+      
+
       onSubmit = async (e) => {
         e.preventDefault()
         const requestOptions = {
@@ -24,6 +27,7 @@ import { withRouter } from 'react-router';
         console.log('fetch result', await result.data.length);
         if(result.data.length < 1){
             console.log('not login');
+            this.setState({ show: true })
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         }else{
@@ -51,9 +55,25 @@ import { withRouter } from 'react-router';
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
                         <Form.Check type="checkbox" label="Check me out" />
                     </Form.Group>
-                    <Button variant="primary" type="submit" onClick={this.onSubmit.bind(this)}>
+                    <Button variant="primary" type="submit" onClick={this.onSubmit.bind(this)} ref={this.state.target}>
                         Log In
                     </Button>
+                    <Overlay target={this.state.target.current} show={this.state.show} placement="right">
+                        {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                        <div
+                            {...props}
+                            style={{
+                            backgroundColor: 'rgba(255, 100, 100, 0.85)',
+                            padding: '2px 10px',
+                            color: 'white',
+                            borderRadius: 3,
+                            ...props.style,
+                            }}
+                        >
+                            Login Failed
+                        </div>
+                        )}
+                    </Overlay>
                 </Form>
             </div>
         )
