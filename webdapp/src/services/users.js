@@ -28,9 +28,7 @@ async function create(user){
 
 function validateCreate(user) {
     let messages = [];
-  
-    console.log(user);
-  
+    
     if (!user) {
       messages.push('No object is provided');
     }
