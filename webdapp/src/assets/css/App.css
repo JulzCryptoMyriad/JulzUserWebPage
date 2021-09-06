@@ -58,6 +58,12 @@
   align-items: left;
   text-align: left;
 }
+
 .center{
   align-content: center;
+}
+
+.carousel-description{
+  color: black;
+  background-color: cadetblue;
 }

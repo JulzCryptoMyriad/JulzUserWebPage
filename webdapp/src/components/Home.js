@@ -2,6 +2,9 @@ import '../assets/css/App.css';
 import {Carousel}  from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react'
+import  coin from'../assets/imgs/coins.jpg';
+import  mocoins from'../assets/imgs/mocoins.jpg';
+import  ethcoin from'../assets/imgs/ethcoin.jpg';
 
 export default class Home extends Component {
     render(){
@@ -11,36 +14,35 @@ export default class Home extends Component {
                         <Carousel.Item>
                             <img
                             className="d-block w-100"
-                            src="../assets/imgs/coins.jpg"
+                            src={coin}
                             alt="First slide"
                             />
-                            <Carousel.Caption>
-                            <h3>First slide label</h3>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                            <Carousel.Caption className="carousel-description">
+                            <h3>Join Today</h3>
+                            <p>Allow your customers to pay using the crypto currency of their choosing while you only receive the tokens you feel comfortable with!.</p>
                             </Carousel.Caption>
                         </Carousel.Item>
                         <Carousel.Item>
                                 <img
                                 className="d-block w-100"
-                                src="../assets/imgs/mocoins.jpg"
+                                src={mocoins}
                                 alt="Second slide"
                                 />
-
-                                <Carousel.Caption>
-                                <h3>Second slide label</h3>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                <Carousel.Caption className="carousel-description">
+                                <h3>Make your money work for you</h3>
+                                <p>even after getting paid you have the chance to increase your revenue.</p>
                                 </Carousel.Caption>
                         </Carousel.Item>
                         <Carousel.Item>
                                 <img
                                 className="d-block w-100"
-                                src="../assets/imgs/ethcoin.jpg"
+                                src={ethcoin}
                                 alt="Third slide"
                                 />
 
-                                <Carousel.Caption>
-                                <h3>Third slide label</h3>
-                                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                                <Carousel.Caption className="carousel-description">
+                                <h3>Be a part of the future</h3>
+                                <p>Be in charge of your maximized finances.</p>
                                 </Carousel.Caption>
                         </Carousel.Item>
                     </Carousel>
