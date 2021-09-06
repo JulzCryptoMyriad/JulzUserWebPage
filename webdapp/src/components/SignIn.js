@@ -1,8 +1,9 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form,  Button, Overlay } from 'react-bootstrap';
+import {Form,  Button, Overlay, Placeholder } from 'react-bootstrap';
 import React, { Component } from 'react'
 import { withRouter } from 'react-router';
+import { Link } from "react-router-dom";
 
  class SignIn extends Component {
     state = {
@@ -75,6 +76,8 @@ import { withRouter } from 'react-router';
                         )}
                     </Overlay>
                 </Form>
+                <Placeholder xs={12} size="xs" />
+                <p className="center"> Not a memeber? <Link to="/SignUp">Sign Up</Link></p>
             </div>
         )
     }

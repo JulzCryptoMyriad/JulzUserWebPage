@@ -31,7 +31,7 @@ class App extends Component{
           <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
           <Route path="/Docs" component={Docs} />
           <Route path="/About" component={About} />
-          <Route path="/Dashboard" component={Dashboard} />
+          {this.state.logged? <Route path="/Dashboard" component={Dashboard} />: <Route path="/Dashboard" component={Home}/>}
         </Switch>
       </BrowserRouter>
       </div>

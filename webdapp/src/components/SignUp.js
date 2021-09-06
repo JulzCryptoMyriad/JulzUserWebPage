@@ -1,7 +1,8 @@
 import '../assets/css/App.css';
-import {Form, FloatingLabel, Row, Col, Button, Alert} from 'react-bootstrap';
+import {Form, FloatingLabel, Row, Col, Button, Alert, Placeholder} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Link } from "react-router-dom";
 
 export default class SignUp extends Component {
     state = {
@@ -75,10 +76,12 @@ export default class SignUp extends Component {
                 </Alert>
                 <Form.Group as={Row} className="mb-3 Sign-item">
                     <Col sm={{ span: 10, offset: 2 }}>
-                    <Button type="submit"  onClick={this.onSubmit}>Sign up</Button>
+                    <Button type="submit"  onClick={this.onSubmit} className="center">Sign up</Button>
                     </Col>
                 </Form.Group>
                 </Form>
+                <Placeholder xs={12} size="xs" />
+                <p className="center">Already a memeber? <Link to="/SignIn">Sign In</Link></p>
             </div>
         )
     }
