@@ -96,7 +96,7 @@ export default class SignIn extends PureComponent {
                           <Card.Body>
                             The code to include your widget inside your page is: 
                             <br/>
-                            <code>{`<iframe src="http://localhost:3000/`+ this.props.userId +`" ></iframe> `}</code>
+                            <code>{`<iframe src="http://localhost:3000/`+ this.props.userId +`/{USD_Amount to be charge}" ></iframe> `}</code>
                           </Card.Body>
                         </Card>
                       </Col>
