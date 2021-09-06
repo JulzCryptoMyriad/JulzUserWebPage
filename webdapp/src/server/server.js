@@ -35,6 +35,6 @@ app.post('/create', async (req, res) => {
   try {
     res.json(await users.create(req.body));
   } catch (err) {
-    console.error(`Error while login user `, err.message);
+    console.error(`Error while creating user `, err.message);
   }
 }); 

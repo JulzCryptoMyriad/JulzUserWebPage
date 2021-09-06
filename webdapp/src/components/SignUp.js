@@ -74,7 +74,7 @@ export default class SignUp extends Component {
                     <Form.Select onChange={e => this.setState({ token: e.target.value })} aria-label="Floating label select example">
                         <option value="0">Choose...</option>
                         <option value="0xdf032bc4b9dc2782bb09352007d4c57b75160b15">ETH</option>
-                        <option value="0x6f5390a8cd02d83b23c5f1d594bffb9050eb4ca3">DAI</option>//This are not the real addresses yet, juts for testing purposes
+                        <option value="0x6f5390a8cd02d83b23c5f1d594bffb9050eb4ca3">DAI</option>
                         <option value="0x7338fe8001a27b63ecdfe4e7a8b226475022edae">USDC</option>
                         <option value="0x5af59f281b3cfd0c12770e4633e6c16dd08ea543">WBTC</option>
                         <option value="0x1a37dd375096820a5fde14342720102c07100f26">USDT</option>
