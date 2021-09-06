@@ -20,17 +20,20 @@ async function create(user){
       "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"')", 
       []
     );
-    const deposit = ethers.utils.parseEther("0");//TBD on #8
-    const contract = await deploy(user, deposit);
-    await contract;
-    const result2 = await db.query(
-      "UPDATE users SET contractAddress = '"+contract.address+"' Where idusers = "+result.insertId+"", 
-      []
-    ); 
+
     let message = 'Error in creating user';
   
-    if (result.affectedRows && result2.affectedRows) {
-      message = 'user created successfully';//create settings
+    if (result.affectedRows) {
+      const deposit = ethers.utils.parseEther("0");//TBD on #8
+      const contract = await deploy(user, deposit);
+      await contract;
+      const result2 = await db.query(
+        "UPDATE users SET contractAddress = '"+contract.address+"' Where idusers = "+result.insertId+"", 
+        []
+      ); 
+      if(result2.affectedRows){
+        message = 'user created successfully';
+      }
     }
   
     return {message};
