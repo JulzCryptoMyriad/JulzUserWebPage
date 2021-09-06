@@ -1,4 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
+require('hardhat-deploy');
+require("@nomiclabs/hardhat-ethers");
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */

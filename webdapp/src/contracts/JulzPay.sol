@@ -3,11 +3,26 @@ pragma solidity ^0.8.7;
 
 import "hardhat/console.sol";
 
+interface IERC20 {
+
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
 contract JulzPay{
-    enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
+    //enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
 
     address payable private owner;
-    mapping(string => bool) public accepted;//Symbol => accepted/not accepted
+    IERC20 public withdrawToken;//Symbol => accepted/not accepted
     bool public monthly;
     bool public covergas;//for later update
     uint256 public lastWithdrawDate;
@@ -17,16 +32,14 @@ contract JulzPay{
     constructor(    address payable _owner,
     bool _monthly,
     bool _covergas,
-    address _treasury) payable{
+    address _treasury,
+    address _withdrawToken) payable{
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
+        withdrawToken =  IERC20(_withdrawToken);
         lastWithdrawDate = block.timestamp;
         treasury = _treasury;
-    }
-
-    function setAccepted(string memory key, bool _value) external{
-        	accepted[key] = _value;
     }
 
     function withdraw() external{

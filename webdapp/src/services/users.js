@@ -1,4 +1,7 @@
+const {deploy} =  require('./deploy.js') ;
 const db = require('../services/db');
+const {ethers} = require('hardhat');
+
 
 async function getMultiple(){
   const data = await db.query('SELECT * FROM users');
@@ -9,28 +12,36 @@ async function getMultiple(){
     meta
   }
 }
+
 async function create(user){
     validateCreate(user);
   
     const result = await db.query(
-      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"')", 
+      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"')", 
       []
     );
-  
+
     let message = 'Error in creating user';
   
     if (result.affectedRows) {
-      message = 'user created successfully';//create settings
+      const deposit = ethers.utils.parseEther("0");//TBD on #8
+      const contract = await deploy(user, deposit);
+      await contract;
+      const result2 = await db.query(
+        "UPDATE users SET contractAddress = '"+contract.address+"' Where idusers = "+result.insertId+"", 
+        []
+      ); 
+      if(result2.affectedRows){
+        message = 'user created successfully';
+      }
     }
   
     return {message};
-  }
+}
 
 function validateCreate(user) {
     let messages = [];
-  
-    console.log(user);
-  
+    
     if (!user) {
       messages.push('No object is provided');
     }
