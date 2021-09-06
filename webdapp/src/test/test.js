@@ -26,6 +26,12 @@ describe("JulzPay", function() {
         assert.equal(await contract.monthly(), monthly);
     });
 
+    it("accepted tokens on storage must allow to be set and default is false", async function(){
+        await contract.setAccepted("DAI", true);
+        assert.equal(await contract.accepted("DAI"), true);
+        assert.equal(await contract.accepted("ETH"), false);
+    });
+
     describe("On Withdraw", () => {
         it("should revert if less than a month has passed", async () => {
             let ex;

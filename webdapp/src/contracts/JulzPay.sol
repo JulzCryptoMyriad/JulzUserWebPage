@@ -7,7 +7,7 @@ contract JulzPay{
     enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
 
     address payable private owner;
-    mapping(string => bool) accepted;//Symbol => accepted/not accepted
+    mapping(string => bool) public accepted;//Symbol => accepted/not accepted
     bool public monthly;
     bool public covergas;//for later update
     uint256 public lastWithdrawDate;
