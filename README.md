@@ -4,7 +4,7 @@ Web site for widget clients to register and mange their account
 ## Quick Start
 Follow these steps:
 1. Clone this repo
-2.  ```cd webapp```
+2.  ```cd webdapp```
 3.  ```npm i```
 4. Set up a MySQL instance with the script on(TBD)
 
