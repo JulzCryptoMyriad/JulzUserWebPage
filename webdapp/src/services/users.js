@@ -1,5 +1,6 @@
 const {deploy} =  require('./deploy.js') ;
 const db = require('../services/db');
+const {abi} = require('../artifacts/src/contracts/JulzPay.sol/JulzPay.json')
 const {ethers} = require('hardhat');
 
 
@@ -28,7 +29,7 @@ async function create(user){
       const contract = await deploy(user, deposit);
       await contract;
       const result2 = await db.query(
-        "UPDATE users SET contractAddress = '"+contract.address+"' Where idusers = "+result.insertId+"", 
+        "UPDATE users SET contractAddress = '"+contract.address+"', abi='"+JSON.stringify(abi)+"' Where idusers = "+result.insertId+"", 
         []
       ); 
       if(result2.affectedRows){
