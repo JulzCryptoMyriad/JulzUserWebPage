@@ -9,7 +9,7 @@ async function deploy(user,deposit) {
   const contract = await JulzPay.deploy(owner, user.checked, false, user.treasury, user.withdrawTokenAddress, {value: deposit});
   await contract.deployed();
   console.log('JulzPay deployed to:', contract.address);
-  return contract;
+  return {address:contract.address, abi: contract.interface};
 }
 //deploy({treasury:"0xaf796D06C7Ffc6231a59adBaF9B1aDf737ECCcA4", monthly:false,withdrawToken:"0xaf796D06C7Ffc6231a59adBaF9B1aDf737ECCcA4"},ethers.utils.parseEther("0"));
 module.exports = {
