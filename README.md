@@ -7,6 +7,7 @@ Follow these steps:
 2.  ```cd webdapp```
 3.  ```npm i```
 4. Set up a MySQL instance with the script on(TBD)
+5. Set up webdapp/.env file with the following key(TBD)
 
 ## To Run
 You must run both the front end and the back end as follows:
