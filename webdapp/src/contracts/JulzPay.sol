@@ -75,6 +75,7 @@ contract JulzPay{
 
         uint256 total = _amount;
         if(_token != withdrawToken){
+            
              total = swap(erc20, _token, _amount);
         }
         emit Paid( msg.sender, _amount, total, _token);
@@ -83,7 +84,7 @@ contract JulzPay{
     //for eth payments
     receive() external payable{
         IERC20 erc20 =  IERC20(WETH_ADD);
-        uint256 total = msg.value;
+        uint256 total;
         if(!(WETH_ADD == withdrawToken)){
             total = swap(erc20, WETH_ADD, msg.value);
         }
@@ -91,15 +92,15 @@ contract JulzPay{
         emit Paid( msg.sender, msg.value, total, address(this));
     }
 
-    function swap(IERC20 erc20, address originalToken, uint amount) internal returns(uint256){
+    function swap(IERC20 erc20, address originalToken, uint amount) internal returns(uint256 result){
         //Convert it to withdrawToken and modify test
         erc20.approve(address(router), amount);
         bytes memory path = abi.encodePacked([originalToken,withdrawToken]);
 
-        ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
+       ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp, amount, 0
         );
-        return router.exactInput(params);
+        result = router.exactInput(params);
     }
 
     function destruct() public {

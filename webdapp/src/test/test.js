@@ -10,12 +10,12 @@ describe("JulzPay", function() {
     let treasury;
     let monthly = false;
     const deposit = ethers.utils.parseEther("0");
-    let withdrawToken ="0x6B175474E89094C44Da98b954EedeAC495271d0F";//DAI address
+    let withdrawToken = DAI_ADDR;
     beforeEach(async () => {
         owner = ethers.provider.getSigner(0);
         treasury = ethers.provider.getSigner(1);
         const JulzPay = await ethers.getContractFactory("JulzPay");
-        contract = await JulzPay.deploy(owner.getAddress(), monthly, false, treasury.getAddress(), withdrawToken, WETH_ADD, {value: deposit});
+        contract = await JulzPay.deploy(owner.getAddress(), monthly, false, treasury.getAddress(), withdrawToken, WETH_ADDR, {value: deposit});
         await contract.deployed();
     });
 
@@ -113,7 +113,7 @@ describe("JulzPay", function() {
 
         describe("after an eth deposit", () => {
             const deposit = ethers.utils.parseEther("1");
-            let signer1, balance, currentBalance;
+            let signer1, balance, currentBalance, ethBalance;
             before(async () => {
                 balance = await ethers.provider.getBalance(contract.address);
                 signer1 = await ethers.provider.getSigner(0);
@@ -121,18 +121,18 @@ describe("JulzPay", function() {
                 //contract.sendTransaction({from: signer1, value: deposit});
                 const tx = signer1.sendTransaction({
                     to: contract.address,
-                    value: deposit
+                    value: deposit,
+                    gasLimit: 100000
                 });
                 await tx;
-                currentBalance = await ethers.provider.getBalance(contract.address);
+                ethBalance = await ethers.provider.getBalance(contract.address);
+                currentBalance = await dai.balanceOf(contract.address);
+                console.log('eth:',Number(ethBalance),'dai', Number(currentBalance));
             });
 
-            it("should have increased the eth holdings", async () => {
+            it("Must swap to prefered token", async () => {
                 assert.equal(Number(currentBalance), deposit);
             });           
-        });
-        describe("Must swap to prefered token", () =>{
-
         });
     });
 });
