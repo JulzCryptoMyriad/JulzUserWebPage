@@ -1,11 +1,16 @@
 const { assert } = require("chai");
+const getERC20 = require("./getERC20");
 
+const DAI_ADDR = "0x6b175474e89094c44da98b954eedeac495271d0f";
+const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
+const UNI_ADDR = "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984";
+const USDT_ADDR = "0xdac17f958d2ee523a2206206994597c13d831ec7";
 describe("JulzPay", function() {
     let owner;
     let treasury;
     let monthly = false;
     const deposit = ethers.utils.parseEther("1");
-    let withdrawToken ="0x1a37dd375096820a5fde14342720102c07100f26";//USDT address on rinkeby
+    let withdrawToken ="0x6B175474E89094C44Da98b954EedeAC495271d0F";//DAI address
     beforeEach(async () => {
         owner = ethers.provider.getSigner(0);
         treasury = ethers.provider.getSigner(1);
@@ -82,4 +87,29 @@ describe("JulzPay", function() {
         });
     });
 
+    describe("Fund Single Depositor", function () {
+        let fund, dai, uni, tether;
+        before(async () => {
+            dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
+            tether = await ethers.getContractAt("IERC20Minimal", USDT_ADDR);
+        });
+        describe("after a deposit", () => {
+            const deposit = ethers.utils.parseEther("100");
+            let signer1, addr1, currentDepositBalance;
+            before(async () => {
+                signer1 = await ethers.provider.getSigner(0);
+                addr1 = await signer1.getAddress();
+                await getERC20(dai, [addr1]);
+                await dai.approve(contract.address, deposit);
+
+                await contract.deposit(deposit, dai.address);
+                currentDepositBalance = await dai.balanceOf(contract.address);
+            });
+
+            it("should have increased the dai holdings", async () => {
+                assert(currentDepositBalance.eq(deposit));
+            });
+           
+        });
+    });
 });
