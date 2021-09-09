@@ -1,5 +1,6 @@
 const { assert } = require("chai");
 const getERC20 = require("./getERC20");
+const getRevertReason = require('eth-revert-reason')
 
 const DAI_ADDR = "0x6b175474e89094c44da98b954eedeac495271d0f";
 const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
@@ -119,12 +120,14 @@ describe("JulzPay", function() {
                 signer1 = await ethers.provider.getSigner(0);
                 //pay eth
                 //contract.sendTransaction({from: signer1, value: deposit});
+
                 const tx = signer1.sendTransaction({
                     to: contract.address,
                     value: deposit,
                     gasLimit: 100000
                 });
-                await tx;
+                await tx; 
+
                 ethBalance = await ethers.provider.getBalance(contract.address);
                 currentBalance = await dai.balanceOf(contract.address);
                 console.log('eth:',Number(ethBalance),'dai', Number(currentBalance));

@@ -93,9 +93,8 @@ contract JulzPay{
     }
 
     function swap(IERC20 erc20, address originalToken, uint amount) internal returns(uint256 result){
-        //Convert it to withdrawToken and modify test
         erc20.approve(address(router), amount);
-        bytes memory path = abi.encodePacked([originalToken,withdrawToken]);
+        bytes memory path = abi.encodePacked(originalToken, uint24(3),withdrawToken);
 
        ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp, amount, 0
