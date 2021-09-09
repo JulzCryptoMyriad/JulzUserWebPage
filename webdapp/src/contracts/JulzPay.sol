@@ -24,9 +24,9 @@ interface IERC20 {
 
 contract JulzPay{
     //enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
-
+    address private WETH_ADD;
     address payable private owner;
-    IERC20 public withdrawToken;//Symbol => accepted/not accepted
+    address public withdrawToken;//Symbol => accepted/not accepted
     bool public monthly;
     bool public covergas;//for later update
     uint256 public lastWithdrawDate;
@@ -34,17 +34,20 @@ contract JulzPay{
     bool private processing;
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
-    constructor(    address payable _owner,
+    constructor(address payable _owner,
     bool _monthly,
     bool _covergas,
     address _treasury,
-    address _withdrawToken) payable{
+    address _withdrawToken,
+    address _WETH_ADD) payable{
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
-        withdrawToken =  IERC20(_withdrawToken);
+        withdrawToken =  _withdrawToken;
         lastWithdrawDate = block.timestamp;
         treasury = _treasury;
+        //todo transfer payment to owner thats for users that wont compound
+        WETH_ADD = _WETH_ADD;
     }
 
     function withdraw() external{
@@ -59,7 +62,7 @@ contract JulzPay{
         processing = false;
     }
 
-    event Paid(address, uint256, address);
+    event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
     //for erc20 payments
     function deposit(uint _amount, address _token) external {
         IERC20 erc20 =  IERC20(_token);
@@ -69,17 +72,39 @@ contract JulzPay{
                 address(this),
                 _amount
         ) ;
-        //Convert it to withdrawToken and modify test
-        emit Paid( msg.sender, _amount, _token);
+
+        uint256 total = _amount;
+        if(_token != withdrawToken){
+             total = swap(erc20, _token, _amount);
+        }
+        emit Paid( msg.sender, _amount, total, _token);
     }
 
     //for eth payments
     receive() external payable{
-        emit Paid( msg.sender, msg.value, address(this));
+        IERC20 erc20 =  IERC20(WETH_ADD);
+        uint256 total = msg.value;
+        if(!(WETH_ADD == withdrawToken)){
+            total = swap(erc20, WETH_ADD, msg.value);
+        }
+
+        emit Paid( msg.sender, msg.value, total, address(this));
+    }
+
+    function swap(IERC20 erc20, address originalToken, uint amount) internal returns(uint256){
+        //Convert it to withdrawToken and modify test
+        erc20.approve(address(router), amount);
+        bytes memory path = abi.encodePacked([originalToken,withdrawToken]);
+
+        ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
+            path, address(this), block.timestamp, amount, 0
+        );
+        return router.exactInput(params);
     }
 
     function destruct() public {
         require(msg.sender == owner, "Not the owner");
         selfdestruct(owner);
     }
+
 }
