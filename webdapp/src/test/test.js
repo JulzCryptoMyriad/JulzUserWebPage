@@ -9,7 +9,7 @@ describe("JulzPay", function() {
     let owner;
     let treasury;
     let monthly = false;
-    const deposit = ethers.utils.parseEther("1");
+    const deposit = ethers.utils.parseEther("0");
     let withdrawToken ="0x6B175474E89094C44Da98b954EedeAC495271d0F";//DAI address
     beforeEach(async () => {
         owner = ethers.provider.getSigner(0);
@@ -93,7 +93,7 @@ describe("JulzPay", function() {
             dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
             tether = await ethers.getContractAt("IERC20Minimal", USDT_ADDR);
         });
-        describe("after a deposit", () => {
+        describe("after a dai deposit", () => {
             const deposit = ethers.utils.parseEther("100");
             let signer1, addr1, currentDepositBalance;
             before(async () => {
@@ -108,8 +108,28 @@ describe("JulzPay", function() {
 
             it("should have increased the dai holdings", async () => {
                 assert(currentDepositBalance.eq(deposit));
+            });           
+        });
+
+        describe("after an eth deposit", () => {
+            const deposit = ethers.utils.parseEther("1");
+            let signer1, balance, currentBalance;
+            before(async () => {
+                balance = await ethers.provider.getBalance(contract.address);
+                signer1 = await ethers.provider.getSigner(0);
+                //pay eth
+                //contract.sendTransaction({from: signer1, value: deposit});
+                const tx = signer1.sendTransaction({
+                    to: contract.address,
+                    value: deposit
+                });
+                await tx;
+                currentBalance = await ethers.provider.getBalance(contract.address);
             });
-           
+
+            it("should have increased the eth holdings", async () => {
+                assert.equal(Number(currentBalance), deposit);
+            });           
         });
     });
 });
