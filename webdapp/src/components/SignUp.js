@@ -73,11 +73,11 @@ export default class SignUp extends Component {
                 <FloatingLabel className="Sign-item" controlId="floatingSelectGrid" label="Select token you want to withdraw as">
                     <Form.Select onChange={e => this.setState({ token: e.target.value })} aria-label="Floating label select example">
                         <option value="0">Choose...</option>
-                        <option value="0xdf032bc4b9dc2782bb09352007d4c57b75160b15">ETH</option>
-                        <option value="0x6f5390a8cd02d83b23c5f1d594bffb9050eb4ca3">DAI</option>
-                        <option value="0x7338fe8001a27b63ecdfe4e7a8b226475022edae">USDC</option>
-                        <option value="0x5af59f281b3cfd0c12770e4633e6c16dd08ea543">WBTC</option>
-                        <option value="0x1a37dd375096820a5fde14342720102c07100f26">USDT</option>
+                        <option value="0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2">ETH</option>
+                        <option value="0x6b175474e89094c44da98b954eedeac495271d0f">DAI</option>
+                        <option value="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48">USDC</option>
+                        <option value="0x2260fac5e5542a773aa44fbcfedf7c193bc2c599">WBTC</option>
+                        <option value="0xdac17f958d2ee523a2206206994597c13d831ec7">USDT</option>
                     </Form.Select>
                 </FloatingLabel>
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
