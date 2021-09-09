@@ -11,5 +11,13 @@ module.exports = {
     tests: "./src/test",
     cache: "./src/cache",
     artifacts: "./src/artifacts"
+  },
+  networks: {
+    hardhat: {
+      forking: {
+        url: process.env.FORKING_URL,
+        blockNumber: 11250730
+      }
+    }
   }
 };
