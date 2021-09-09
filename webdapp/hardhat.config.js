@@ -1,11 +1,12 @@
 require("@nomiclabs/hardhat-waffle");
 require('hardhat-deploy');
 require("@nomiclabs/hardhat-ethers");
+require("dotenv").config();
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.7",
+  solidity: "0.7.5",
   paths: {
     sources: "./src/contracts",
     tests: "./src/test",
