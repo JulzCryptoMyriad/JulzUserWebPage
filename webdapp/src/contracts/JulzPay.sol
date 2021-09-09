@@ -32,6 +32,7 @@ contract JulzPay{
     uint256 public lastWithdrawDate;
     address public treasury;
     bool private processing;
+    ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
     constructor(    address payable _owner,
     bool _monthly,
@@ -58,9 +59,17 @@ contract JulzPay{
         processing = false;
     }
 
-    event Paid(address, uint256);
-    receive() external payable{
-        emit Paid(msg.sender, msg.value);
+    event Paid(address, uint256, address);
+    function deposit(uint _amount, address _token) external {
+        IERC20 erc20 =  IERC20(_token);
+        // pulling cryptocurrency from the person calling this contract 
+        erc20.transferFrom(
+                msg.sender,
+                address(this),
+                _amount
+        ) ;
+        //Convert it to withdrawToken
+        emit Paid( msg.sender, _amount, _token);
     }
 
     function destruct() public {
