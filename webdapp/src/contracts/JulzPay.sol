@@ -1,6 +1,10 @@
 //SPDX-License-Identifier: WTFPL
-pragma solidity ^0.8.7;
+pragma solidity ^0.7.5;
+pragma abicoder v2;
 
+import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
+import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
+import "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol";
 import "hardhat/console.sol";
 
 interface IERC20 {
