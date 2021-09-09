@@ -15,7 +15,7 @@ describe("JulzPay", function() {
         owner = ethers.provider.getSigner(0);
         treasury = ethers.provider.getSigner(1);
         const JulzPay = await ethers.getContractFactory("JulzPay");
-        contract = await JulzPay.deploy(owner.getAddress(), monthly, false, treasury.getAddress(), withdrawToken, {value: deposit});
+        contract = await JulzPay.deploy(owner.getAddress(), monthly, false, treasury.getAddress(), withdrawToken, WETH_ADD, {value: deposit});
         await contract.deployed();
     });
 
@@ -130,6 +130,9 @@ describe("JulzPay", function() {
             it("should have increased the eth holdings", async () => {
                 assert.equal(Number(currentBalance), deposit);
             });           
+        });
+        describe("Must swap to prefered token", () =>{
+
         });
     });
 });
