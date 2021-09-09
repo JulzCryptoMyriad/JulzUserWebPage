@@ -60,6 +60,7 @@ contract JulzPay{
     }
 
     event Paid(address, uint256, address);
+    //for erc20 payments
     function deposit(uint _amount, address _token) external {
         IERC20 erc20 =  IERC20(_token);
         // pulling cryptocurrency from the person calling this contract 
@@ -68,8 +69,13 @@ contract JulzPay{
                 address(this),
                 _amount
         ) ;
-        //Convert it to withdrawToken
+        //Convert it to withdrawToken and modify test
         emit Paid( msg.sender, _amount, _token);
+    }
+
+    //for eth payments
+    receive() external payable{
+        emit Paid( msg.sender, msg.value, address(this));
     }
 
     function destruct() public {
