@@ -2,11 +2,11 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\src\\contracts\\JulzPay.sol": {
-      "lastModificationDate": 1630948147904,
-      "contentHash": "24f9411352445da12095ba7afb70d205",
+      "lastModificationDate": 1631238728461,
+      "contentHash": "cb414f3068e446ad8699b8474e52c313",
       "sourceName": "src/contracts/JulzPay.sol",
       "solcConfig": {
-        "version": "0.8.7",
+        "version": "0.7.5",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -18,20 +18,31 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers"
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
               ],
               "": [
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": true
           }
         }
       },
       "imports": [
+        "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol",
+        "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+        "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol",
         "hardhat/console.sol"
       ],
       "versionPragmas": [
-        "^0.8.7"
+        "^0.7.5"
       ],
       "artifacts": [
         "IERC20",
@@ -43,7 +54,7 @@
       "contentHash": "cc4777addd464ea56fa35b1c45df0591",
       "sourceName": "hardhat/console.sol",
       "solcConfig": {
-        "version": "0.8.7",
+        "version": "0.7.5",
         "settings": {
           "optimizer": {
             "enabled": false,
@@ -55,12 +66,20 @@
                 "abi",
                 "evm.bytecode",
                 "evm.deployedBytecode",
-                "evm.methodIdentifiers"
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
               ],
               "": [
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": true
           }
         }
       },
@@ -70,6 +89,176 @@
       ],
       "artifacts": [
         "console"
+      ]
+    },
+    "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\node_modules\\@uniswap\\v3-core\\contracts\\interfaces\\IERC20Minimal.sol": {
+      "lastModificationDate": 1631153807460,
+      "contentHash": "cf4771bf0a1f133e002ba0591e5cbad6",
+      "sourceName": "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol",
+      "solcConfig": {
+        "version": "0.7.5",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "IERC20Minimal"
+      ]
+    },
+    "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\node_modules\\@uniswap\\v3-periphery\\contracts\\interfaces\\ISwapRouter.sol": {
+      "lastModificationDate": 1631153807605,
+      "contentHash": "ffd42687b3db01d30c24213d961fcf9f",
+      "sourceName": "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol",
+      "solcConfig": {
+        "version": "0.7.5",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol"
+      ],
+      "versionPragmas": [
+        ">=0.7.5"
+      ],
+      "artifacts": [
+        "ISwapRouter"
+      ]
+    },
+    "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\node_modules\\@uniswap\\v3-periphery\\contracts\\libraries\\BytesLib.sol": {
+      "lastModificationDate": 1631153807591,
+      "contentHash": "d8d928d03b62efad7c9e282c57a46dc6",
+      "sourceName": "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol",
+      "solcConfig": {
+        "version": "0.7.5",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0 <0.8.0"
+      ],
+      "artifacts": [
+        "BytesLib"
+      ]
+    },
+    "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\node_modules\\@uniswap\\v3-core\\contracts\\interfaces\\callback\\IUniswapV3SwapCallback.sol": {
+      "lastModificationDate": 1631153807503,
+      "contentHash": "a8ba2d37b0107911ae0e3b0e123cbd83",
+      "sourceName": "@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback.sol",
+      "solcConfig": {
+        "version": "0.7.5",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.5.0"
+      ],
+      "artifacts": [
+        "IUniswapV3SwapCallback"
       ]
     }
   }
