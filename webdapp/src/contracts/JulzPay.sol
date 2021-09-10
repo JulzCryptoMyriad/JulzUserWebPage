@@ -63,43 +63,33 @@ contract JulzPay{
     }
 
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
-    //for erc20 payments
-    function deposit(uint _amount, address _token) external {
-        IERC20 erc20 =  IERC20(_token);
-        // pulling cryptocurrency from the person calling this contract 
-        erc20.transferFrom(
-                msg.sender,
-                address(this),
-                _amount
-        ) ;
-
-        uint256 total = _amount;
-        if(_token != withdrawToken){
-            
-             total = swap(erc20, _token, _amount);
+    function deposit(uint _amount, address _token) external payable{
+        if(_token == WETH_ADD){
+            _amount = msg.value;
+        }else{
+            IERC20 erc20 =  IERC20(_token);
+            erc20.transferFrom(msg.sender, address(this), _amount) ;
         }
-        emit Paid( msg.sender, _amount, total, _token);
+        emit Paid( msg.sender, _amount, _amount, _token);
     }
 
-    //for eth payments
-    receive() external payable{
-        IERC20 erc20 =  IERC20(WETH_ADD);
-        uint256 total;
-        if(!(WETH_ADD == withdrawToken)){
-            total = swap(erc20, WETH_ADD, msg.value);
+    function swap(address _token, bytes memory path) public returns(uint256 result){
+        uint amount = 0;
+        if(_token == WETH_ADD){
+             amount = address(this).balance;
+        }else{
+            IERC20 erc20 =  IERC20(_token);
+            console.log('balance on thing', erc20.balanceOf(address(this)));
+            amount = erc20.balanceOf(address(this));
+            erc20.approve(address(router), amount);
         }
-
-        emit Paid( msg.sender, msg.value, total, address(this));
-    }
-
-    function swap(IERC20 erc20, address originalToken, uint amount) internal returns(uint256 result){
-        erc20.approve(address(router), amount);
-        bytes memory path = abi.encodePacked(originalToken, uint24(3),withdrawToken);
-
-       ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
-            path, address(this), block.timestamp, amount, 0
+        ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
+            path, address(this), block.timestamp,  amount, 0
         );
-        result = router.exactInput(params);
+        console.log('something is up');
+        result = router.exactInput{
+                value:amount
+            }(params);
     }
 
     function destruct() public {
