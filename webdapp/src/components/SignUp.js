@@ -24,7 +24,7 @@ export default class SignUp extends Component {
         const signer = provider.getSigner();
         await signer;
         console.log('signer:',await signer.getAddress(), await signer.getTransactionCount());
-        const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},{value: ethers.utils.parseEther("0.1")}, signer);
+        const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
        // contract.deployed();
         console.log('le print',contract);
         const requestOptions = {
