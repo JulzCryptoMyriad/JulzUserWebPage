@@ -23,7 +23,7 @@ export default class SignUp extends Component {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         const signer = provider.getSigner();
         await signer;
-        console.log('signer:',await signer.getAddress(), await signer.getTransactionCount());
+        console.log('signer:',await signer.getAddress());
         const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
        // contract.deployed();
         console.log('le print',contract);

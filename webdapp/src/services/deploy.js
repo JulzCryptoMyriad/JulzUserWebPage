@@ -13,7 +13,7 @@ async function deploy(user, deposit, signer) {
     value: ethers.utils.parseEther(deposit)
   })
   console.log('SecondDeploying msg JulzPay...');
-  console.log('tx:', contract.deployTransaction);
+  console.log('tx:', await contract.deployTransaction );
   await contract.deployed();
 
   console.log('JulzPay deployed to:', contract.address);
