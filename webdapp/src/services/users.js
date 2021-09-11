@@ -1,7 +1,5 @@
-const {deploy} =  require('./deploy.js') ;
 const db = require('../services/db');
-const {abi} = require('../artifacts/src/contracts/JulzPay.sol/JulzPay.json')
-const {ethers} = require('hardhat');
+const {abi} = require('../artifacts/src/contracts/JulzPay.sol/JulzPay.json');
 
 
 async function getMultiple(){
@@ -25,20 +23,10 @@ async function create(user){
     let message = 'Error in creating user';
   
     if (result.affectedRows) {
-      const deposit = (!user.monthly)?ethers.utils.parseEther("0"):ethers.utils.parseEther("0.5");
-
-      const contract = await deploy(user, deposit);
-      await contract;
-      const result2 = await db.query(
-        "UPDATE users SET contractAddress = '"+contract.address+"', abi='"+JSON.stringify(abi)+"' Where idusers = "+result.insertId+"", 
-        []
-      ); 
-      if(result2.affectedRows){
-        message = 'user created successfully';
-      }
+        message = 'user created successfully';     
     }
   
-    return {message};
+    return {message: message,  id: result.insertId};
 }
 
 function validateCreate(user) {
@@ -64,7 +52,7 @@ function validateCreate(user) {
     }
   }
 
-  async function login(user){
+async function login(user){
     const data = await db.query(
         "select * from  users where email = '"+user.email+"' and password = '"+user.password+"'", 
         [ ]
@@ -77,7 +65,7 @@ function validateCreate(user) {
     
       return {data};
 
-  }
+}
 
 module.exports = {
   getMultiple,

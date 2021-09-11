@@ -16,7 +16,7 @@ export default class SignUp extends Component {
       };
     
       onSubmit = async (e) => {
-
+        e.preventDefault()
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -28,13 +28,12 @@ export default class SignUp extends Component {
         .then((data) =>  console.log('res',data));
         await result
         if(result){
-            console.log('not login');
-            this.setState({ show: true })
-            e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-        }else{
             this.props.onLog();
             this.props.history.push('/Dashboard');
+        }else{
+            console.log('not login');
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
         } 
       };
 
