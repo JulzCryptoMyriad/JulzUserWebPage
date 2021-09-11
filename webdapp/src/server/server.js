@@ -38,3 +38,11 @@ app.post('/create', async (req, res) => {
     console.error(`Error while creating user `, err.message);
   }
 }); 
+
+app.post('/update', async (req, res) => { 
+  try {
+    res.json(await users.update(req.body));
+  } catch (err) {
+    console.error(`Error while updating user `, err.message);
+  }
+}); 
