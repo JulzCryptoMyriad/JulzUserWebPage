@@ -67,8 +67,25 @@ async function login(user){
 
 }
 
+async function update(data){
+  const result2 = await db.query(
+    "UPDATE users SET contractAddress = '"+data.address+"', abi='"+JSON.stringify(abi)+"' Where idusers = "+data.id+"", 
+    []
+  ); 
+    let message =  "There was an error on the update";
+
+    if (result2.affectedRows) {
+      message = "All went great on the update";
+    }
+
+    return message;
+
+}
+
 module.exports = {
   getMultiple,
   create,
-  login
+  login,
+  update
+
 }
