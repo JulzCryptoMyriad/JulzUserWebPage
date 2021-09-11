@@ -1,4 +1,4 @@
-const {ethers} = require('hardhat');
+const {ethers} = require('ethers');
 
 let owner = "0xaf796D06C7Ffc6231a59adBaF9B1aDf737ECCcA4";//random address to test
 const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
@@ -10,7 +10,7 @@ async function deploy(user,deposit) {
   console.log('JulzPay deployed to:', contract.address);
   return {address:contract.address, abi: contract.interface};
 }
-//deploy({treasury:"0xaf796D06C7Ffc6231a59adBaF9B1aDf737ECCcA4", monthly:false,withdrawToken:"0xaf796D06C7Ffc6231a59adBaF9B1aDf737ECCcA4"},ethers.utils.parseEther("0"));
+
 module.exports = {
     deploy
   }
