@@ -40,7 +40,7 @@ contract JulzPay{
     address _treasury,
     address _withdrawToken,
     address _WETH_ADD) payable{
-        require(_monthly || msg.value > 0,"Not funded correctly");
+        require(_monthly || (!_monthly && msg.value > 0),"Not funded correctly");
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
@@ -89,7 +89,6 @@ contract JulzPay{
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp,  amount, 0
         );
-        console.log('something is up');
         result = router.exactInput{
                 value:amount
             }(params);
