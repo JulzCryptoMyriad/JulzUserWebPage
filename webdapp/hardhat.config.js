@@ -14,11 +14,19 @@ module.exports = {
     artifacts: "./src/artifacts"
   },
   networks: {
-    hardhat: {
+   /* hardhat: {
       forking: {
         url: process.env.FORKING_URL,
         blockNumber: 13195099
       }
-    }
+    },
+    ganache:{
+      url: "HTTP://127.0.0.1:7545",
+      accounts: ["2edb1022ad751e86680072aba80b52d093b03c692c064b762a51fbc27c1524d7"],
+      chainId: 1337
+    },
+    rinkeby: {
+      url: process.env.RINKEBY_URL
+    }*/
   }
 };
