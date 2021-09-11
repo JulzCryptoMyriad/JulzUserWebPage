@@ -25,7 +25,8 @@ async function create(user){
     let message = 'Error in creating user';
   
     if (result.affectedRows) {
-      const deposit = ethers.utils.parseEther("0");//TBD on #8
+      const deposit = (!user.monthly)?ethers.utils.parseEther("0"):ethers.utils.parseEther("0.5");
+      console.log('deposit',deposit);
       const contract = await deploy(user, deposit);
       await contract;
       const result2 = await db.query(
