@@ -30,7 +30,7 @@ contract JulzPay{
     bool public monthly;
     bool public covergas;//for later update
     uint256 public lastWithdrawDate;
-    address public treasury;
+    address public treasury;    
     bool private processing;
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
@@ -40,14 +40,17 @@ contract JulzPay{
     address _treasury,
     address _withdrawToken,
     address _WETH_ADD) payable{
+        require(_monthly || (!_monthly && msg.value > 0),"Not funded correctly");
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
         withdrawToken =  _withdrawToken;
         lastWithdrawDate = block.timestamp;
         treasury = _treasury;
-        //todo transfer payment to owner thats for users that wont compound
         WETH_ADD = _WETH_ADD;
+        if(msg.value > 0){
+            owner.transfer(address(this).balance);
+        }
     }
 
     function withdraw() external{
@@ -86,7 +89,6 @@ contract JulzPay{
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp,  amount, 0
         );
-        console.log('something is up');
         result = router.exactInput{
                 value:amount
             }(params);

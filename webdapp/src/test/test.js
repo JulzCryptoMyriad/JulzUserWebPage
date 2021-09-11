@@ -28,8 +28,8 @@ function encodePath(path, fees) {
 describe("JulzPay", function() {
     let owner;
     let treasury;
-    let monthly = false;
-    const deposit = ethers.utils.parseEther("0");
+    let monthly = true;
+    const deposit = ethers.utils.parseEther("0.5");
     let withdrawToken = DAI_ADDR;
     beforeEach(async () => {
         owner = ethers.provider.getSigner(0);
@@ -39,9 +39,9 @@ describe("JulzPay", function() {
         await contract.deployed();
     });
 
-    it("should be funded initially", async function() {
+    it("should not be funded initially if monthly is false", async function() {
         const balance = await ethers.provider.getBalance(contract.address);
-        assert.equal(balance.toString(), deposit);
+        assert.equal(Number(balance.toString()), 0);
     });
 
     it("storage must be set initially", async function(){
@@ -122,8 +122,12 @@ describe("JulzPay", function() {
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
                 await getERC20(dai, [addr1], true);
-                await dai.approve(contract.address, deposit);                
-                await contract.deposit(deposit, dai.address);
+                await dai.approve(contract.address, deposit);  
+                try{
+                    await contract.deposit(deposit, dai.address);
+                } catch(err){
+                    console.log("Check your erc20 depositor account dai balance on the fork number");
+                }                             
                 currentDepositBalance = await dai.balanceOf(contract.address);
             });
 
