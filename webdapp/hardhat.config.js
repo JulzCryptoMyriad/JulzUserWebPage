@@ -14,11 +14,14 @@ module.exports = {
     artifacts: "./src/artifacts"
   },
   networks: {
-    hardhat: {
+   /* hardhat: {
       forking: {
         url: process.env.FORKING_URL,
         blockNumber: 13195099
       }
+    }*/
+    rinkeby: {
+      url: process.env.RINKEBY_URL
     }
   }
 };

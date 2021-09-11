@@ -3,6 +3,8 @@ import {Form, FloatingLabel, Row, Col, Button, Alert, Placeholder} from 'react-b
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import {deploy} from '../services/deploy';
+import {ethers} from 'ethers';
 
 export default class SignUp extends Component {
     state = {
@@ -16,7 +18,13 @@ export default class SignUp extends Component {
       };
     
       onSubmit = async (e) => {
-
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const signer = provider.getSigner();
+        await signer;
+        const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
+        contract.deployed();
+        console.log(contract);
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -25,16 +33,30 @@ export default class SignUp extends Component {
 
         const result = fetch("/create", requestOptions)
         .then(async (res) => await res.json())
-        .then((data) =>  console.log('res',data));
+        .then((data) =>  console.log('res', data));
         await result
+
         if(result){
-            console.log('not login');
-            this.setState({ show: true })
-            e.stopPropagation();
-            e.nativeEvent.stopImmediatePropagation();
-        }else{
+            console.log('11');
+            const userid = result.id;
+            console.log('2');
+           
+            const upRequestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify( {id: userid, address: contract.address})
+            };
+            console.log('3');
+            const update = fetch("/update", upRequestOptions)
+            .then(async (res) => await res.json())
+            .then((data) =>  console.log('res', data));
+            await update
+            console.log('4');
             this.props.onLog();
             this.props.history.push('/Dashboard');
+        }else{            
+            e.stopPropagation();
+            e.nativeEvent.stopImmediatePropagation();
         } 
       };
 
