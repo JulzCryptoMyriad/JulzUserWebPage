@@ -6,25 +6,19 @@ const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 
 
 async function deploy(user, deposit, signer) {
-
   const factory = new ethers.ContractFactory(JulzPay.abi, JulzPay.bytecode, signer);
 
   console.log('Deploying JulzPay...');
-  factory.deploy(owner, user.checked, false, user.treasury, user.withdrawTokenAddress, WETH_ADDR, {
-    value: ethers.utils.parseEther(deposit)
-  }).then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
-  console.log('SecondDeploying JulzPay...');
-  return  factory.deploy(owner, user.checked, false, user.treasury, user.withdrawTokenAddress, WETH_ADDR, {
+  //let overrides = { nonce: noncePromise.then((nonce) => nonce + i) };
+  const contract = factory.deploy(owner, user.checked, false, user.treasury, user.withdrawTokenAddress, WETH_ADDR, {
     value: ethers.utils.parseEther(deposit)
   })
-  /*await contract.deployed();
+  console.log('SecondDeploying msg JulzPay...');
   console.log('tx:', contract.deployTransaction);
+  await contract.deployed();
+
   console.log('JulzPay deployed to:', contract.address);
-   {address:contract.address, abi: contract.interface};*/
+   return {address:contract.address, abi: contract.interface};
 }
 
 module.exports = {

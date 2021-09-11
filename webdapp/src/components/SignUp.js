@@ -19,12 +19,14 @@ export default class SignUp extends Component {
     
       onSubmit = async (e) => {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log('provider', provider);
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         const signer = provider.getSigner();
         await signer;
+        console.log('signer:',await signer.getAddress(), await signer.getTransactionCount());
         const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
-        contract.deployed();
-        console.log(contract);
+       // contract.deployed();
+        console.log('le print',contract);
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
