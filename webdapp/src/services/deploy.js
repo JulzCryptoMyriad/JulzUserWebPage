@@ -9,7 +9,6 @@ async function deploy(user, deposit, signer) {
   const factory = new ethers.ContractFactory(JulzPay.abi, JulzPay.bytecode, signer);
 
   console.log('Deploying JulzPay...');
-  //let overrides = { nonce: noncePromise.then((nonce) => nonce + i) };
   const contract = factory.deploy(owner, user.checked, false, user.treasury, user.withdrawTokenAddress, WETH_ADDR, {
     value: ethers.utils.parseEther(deposit)
   })
