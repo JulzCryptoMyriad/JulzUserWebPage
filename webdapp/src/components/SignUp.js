@@ -26,11 +26,13 @@ export default class SignUp extends Component {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify( {email: this.state.email, password: this.state.password, withdrawTokenAddress: this.state.token, treasury: this.state.treasury, checked: this.state.checked, contractAddress: this.state.contractAddress })
         };
-
+        let userid;
         const result = fetch("/create", requestOptions)
         .then(async (res) => await res.json())
-        .then((data) =>  console.log('res',data));
-        await result
+        .then((data) =>  {console.log('res',data);
+            userid = data.id;  
+        });
+        await result;
 
         if(result){
             //CONTRACT DEPLOYMENT
@@ -41,23 +43,18 @@ export default class SignUp extends Component {
             await signer;
             console.log('signer:',await signer.getAddress());
             const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
-            console.log('le print',contract);
-            //UPDATE USER
-            console.log('11');
-            const userid = result.id;
-            console.log('2');
-           
+            //UPDATE USER registry
+                     
             const upRequestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify( {id: userid, address: contract.address})
             };
-            console.log('3');
+            console.log('id',userid, 'data', upRequestOptions.body,'result', result);
             const update = fetch("/update", upRequestOptions)
             .then(async (res) => await res.json())
             .then((data) =>  console.log('res', data));
-            await update
-            console.log('4');
+            await update;
             //REDIRECTING
             this.props.onLog();
             this.props.history.push('/Dashboard');
@@ -118,7 +115,7 @@ export default class SignUp extends Component {
                 </Alert>
                 <Form.Group as={Row} className="mb-3 Sign-item">
                     <Col sm={{ span: 10, offset: 2 }}>
-                    <Button type="submit"  onClick={this.onSubmit} className="center">Sign up</Button>
+                    <Button type="submit"  onClick={this.onSubmit.bind(this)} className="center">Sign up</Button>
                     </Col>
                 </Form.Group>
                 </Form>
