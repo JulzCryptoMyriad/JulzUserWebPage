@@ -5,6 +5,8 @@ pragma abicoder v2;
 import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol";
+import "./ILendingPool.sol";
+import "./IWETHGateway.sol";
 import "hardhat/console.sol";
 
 interface IERC20 {
@@ -23,16 +25,26 @@ interface IERC20 {
 }
 
 contract JulzPay{
-    //enum TokenSymbol {ETH, USDC, DAI, WBTC, USDT}//Eth, Usdc, Dai wrapped bitcoin, Thether
     address private WETH_ADD;
     address payable private owner;
-    address public withdrawToken;//Symbol => accepted/not accepted
+    address public withdrawToken;
     bool public monthly;
     bool public covergas;//for later update
     uint256 public lastWithdrawDate;
     address public treasury;    
     bool private processing;
+    uint private originalDeposits;
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
+    // the mainnet AAVE v2 lending pool
+    ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
+    //the mainnet AAVE v2 wethGateway
+    IWETHGateway gateway = IWETHGateway(0xDcD33426BA191383f1c9B431A342498fdac73488);
+    // aave interest bearing addresses on mainnet
+    IERC20 aDai = IERC20(0x028171bCA77440897B824Ca71D1c56caC55b68A3);
+    IERC20 aUSDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    IERC20 aUSDT = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
+    IERC20 aWBTC = IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599);
+    IERC20 aWETH = IERC20(0x030bA81f1c18d280636F32af80b9AAd02Cf0854e);
 
     constructor(address payable _owner,
     bool _monthly,
@@ -67,11 +79,16 @@ contract JulzPay{
 
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
     function deposit(uint _amount, address _token) external payable{
+        originalDeposits += _amount;
         if(_token == WETH_ADD){
             _amount = msg.value;
+            gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
         }else{
+            
             IERC20 erc20 =  IERC20(_token);
             erc20.transferFrom(msg.sender, address(this), _amount) ;
+            erc20.approve(address(pool), _amount);
+            pool.deposit(_token, _amount, address(this), 0);  
         }
         emit Paid( msg.sender, _amount, _amount, _token);
     }
@@ -93,6 +110,8 @@ contract JulzPay{
                 value:amount
             }(params);
     }
+    
+    receive() external payable {}
 
     function destruct() public {
         require(msg.sender == owner, "Not the owner");
