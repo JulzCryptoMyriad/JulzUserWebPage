@@ -111,7 +111,7 @@ describe("JulzPay", function() {
         let weth, dai, usdc, tether;
         before(async () => {
             dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
-            aDai = await ethers.getContractAt("IERC20", "0x028171bCA77440897B824Ca71D1c56caC55b68A3");
+            aDai = await ethers.getContractAt("IERC20Minimal", "0x028171bCA77440897B824Ca71D1c56caC55b68A3");
             aWETH = await ethers.getContractAt("IERC20", "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e");
             tether = await ethers.getContractAt("IERC20Minimal", USDT_ADDR);
             usdc = await ethers.getContractAt("IERC20Minimal", USDC_ADDR);
@@ -141,9 +141,9 @@ describe("JulzPay", function() {
             });
         
             it("should hold aDAI", async function () {
-                const balance = await aDai.balanceOf(contract.address);
-                console.log('balance adai', Number(balance));
-                assert.equal(balance.toString(), deposit.toString());
+                const abalance = await aDai.balanceOf(contract.address);
+
+                assert.equal(abalance.toString(), deposit.toString());
             }); 
         });
 
@@ -152,10 +152,14 @@ describe("JulzPay", function() {
             let signer1, addr1, currentDepositBalance=0;
             beforeEach(async () => {
                 signer1 = await ethers.provider.getSigner(0);
-                const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR,{value: deposit});
+                try{
+                    const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR,{value: deposit});
 
-                const receipt = await tx.wait();
-                console.log(receipt,'its done')
+                    const receipt = await tx.wait();
+                }catch(err){
+                    console.log('on eth deposit', err);
+                }
+
                 currentDepositBalance = await ethers.provider.getBalance(contract.address); 
             });
 

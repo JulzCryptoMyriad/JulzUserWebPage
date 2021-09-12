@@ -38,7 +38,7 @@ contract JulzPay{
     // the mainnet AAVE v2 lending pool
     ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
     //the mainnet AAVE v2 wethGateway
-    IWETHGateway gateway = IWETHGateway(0xDcD33426BA191383f1c9B431A342498fdac73488);
+    IWETHGateway gateway = IWETHGateway(0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04);
     // aave interest bearing addresses on mainnet
     IERC20 aDai = IERC20(0x028171bCA77440897B824Ca71D1c56caC55b68A3);
     IERC20 aUSDC = IERC20(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
@@ -110,7 +110,7 @@ contract JulzPay{
                 value:amount
             }(params);
     }
-    
+
     receive() external payable {}
 
     function destruct() public {

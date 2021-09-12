@@ -15,7 +15,7 @@ async function getERC20(erc20, accts, type) {
             if(type){
                 await erc20.connect(depositorSigner).transfer(accts[i], ethers.utils.parseEther("100"));
             }else{
-                await erc20.connect(depositorSigner).transfer(accts[i], ethers.utils.parseEther("10"));
+                await erc20.connect(depositorSigner).transfer(accts[i], ethers.utils.parseEther("100"));
             }
            
         }catch(ex){
