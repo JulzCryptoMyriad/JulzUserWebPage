@@ -120,7 +120,7 @@ describe("JulzPay", function() {
         describe("after a dai deposit", () => {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
-            before(async () => {
+            beforeEach(async () => {
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
                 await getERC20(dai, [addr1], true);
@@ -142,7 +142,6 @@ describe("JulzPay", function() {
         
             it("should hold aDAI", async function () {
                 const abalance = await aDai.balanceOf(contract.address);
-
                 assert.equal(abalance.toString(), deposit.toString());
             }); 
         });

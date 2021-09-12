@@ -83,12 +83,12 @@ contract JulzPay{
         if(_token == WETH_ADD){
             _amount = msg.value;
             gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
-        }else{
-            
+        }else{            
             IERC20 erc20 =  IERC20(_token);
-            erc20.transferFrom(msg.sender, address(this), _amount) ;
+            erc20.transferFrom(msg.sender, address(this), _amount);
             erc20.approve(address(pool), _amount);
             pool.deposit(_token, _amount, address(this), 0);  
+            console.log('balance of adai', aDai.balanceOf(address(this)));
         }
         emit Paid( msg.sender, _amount, _amount, _token);
     }
