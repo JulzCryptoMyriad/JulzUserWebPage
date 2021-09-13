@@ -78,19 +78,26 @@ contract JulzPay{
     }
 
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
-    function deposit(uint _amount, address _token) external payable{
+
+    function deposit(uint _amount, address _token, bytes memory path) external payable{
         originalDeposits += _amount;
-        if(_token == WETH_ADD){
+        uint256 deposit;
+        //swap first
+        if(!(withdrawToken == _token)){
+            deposit = swap(_token, path);
+        }
+        //then do this with the withdraw token
+        if(withdrawToken == WETH_ADD){
             _amount = msg.value;
             gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
         }else{            
-            IERC20 erc20 =  IERC20(_token);
+            IERC20 erc20 =  IERC20(withdrawToken);
             erc20.transferFrom(msg.sender, address(this), _amount);
             erc20.approve(address(pool), _amount);
             pool.deposit(_token, _amount, address(this), 0);  
             console.log('balance of adai', aDai.balanceOf(address(this)));
         }
-        emit Paid( msg.sender, _amount, _amount, _token);
+        emit Paid( msg.sender, _amount, deposit, _token);
     }
 
     function swap(address _token, bytes memory path) public returns(uint256 result){
@@ -103,12 +110,14 @@ contract JulzPay{
             amount = erc20.balanceOf(address(this));
             erc20.approve(address(router), amount);
         }
+
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp,  amount, 0
         );
+
         result = router.exactInput{
                 value:amount
-            }(params);
+        }(params);
     }
 
     receive() external payable {}
