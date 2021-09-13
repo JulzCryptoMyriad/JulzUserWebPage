@@ -68,19 +68,32 @@ contract JulzPay{
     function withdraw() external{
         require(lastWithdrawDate + 30 days <= block.timestamp, "Not ready to withdraw");  
         require(processing == false);
-
-        processing = true;            
-
-        payable(treasury).transfer(address(this).balance);
-        lastWithdrawDate = block.timestamp;
+        processing = true;  //avoids reentrancy
         
+        if(withdrawToken == WETH_ADD){           
+            uint balance =  originalDeposits + ((aWETH.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
+            aWETH.approve(address(gateway), balance);
+            gateway.withdrawETH(address(pool), balance, address(this));
+            //tranfers
+            payable(treasury).transfer(address(this).balance);
+            owner.transfer(type(uint).max);
+            originalDeposits = 0;
+        }else{
+            IERC20 aTOKEN = GetAToken();
+            uint amount = originalDeposits + ((aTOKEN.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
+            //aave + tranfers
+            pool.withdraw(address(withdrawToken), amount, treasury);          
+            pool.withdraw(address(withdrawToken), type(uint).max, owner);
+            originalDeposits = 0;
+        }         
+
+        lastWithdrawDate = block.timestamp;        
         processing = false;
     }
 
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
 
     function deposit(uint _amount, address _token, bytes memory path) external payable{
-        originalDeposits += _amount;
         uint256 sdeposit;
 
         if(!(WETH_ADD == _token)){
@@ -90,6 +103,9 @@ contract JulzPay{
 
         if(!(withdrawToken == _token)){
             sdeposit = swap(withdrawToken, path, _amount);
+            originalDeposits += sdeposit;
+        }else{
+             originalDeposits += _amount;
         }
 
         if(withdrawToken == WETH_ADD){
@@ -122,6 +138,21 @@ contract JulzPay{
     function destruct() public {
         require(msg.sender == owner, "Not the owner");
         selfdestruct(owner);
+    }
+
+    function GetAToken() internal view returns(IERC20){
+        if(withdrawToken == address(0x6B175474E89094C44Da98b954EedeAC495271d0F)){
+            return aDai;
+        }
+        if(withdrawToken == address(0xdAC17F958D2ee523a2206206994597C13D831ec7)){
+            return aUSDT;
+        }
+        if(withdrawToken == address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)){
+            return aUSDC;
+        }
+        if(withdrawToken == address(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599)){
+            return aWBTC;
+        }
     }
 
 }
