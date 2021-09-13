@@ -71,16 +71,16 @@ contract JulzPay{
         processing = true;  //avoids reentrancy
         
         if(withdrawToken == WETH_ADD){           
-            uint balance =  originalDeposits + ((aWETH.balanceOf(address(this)) - originalDeposits)*0.7));
+            uint balance =  originalDeposits + ((aWETH.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
             aWETH.approve(address(gateway), balance);
-            gateway.withdrawETH(balance, address(this));
+            gateway.withdrawETH(address(pool), balance, address(this));
             //tranfers
             payable(treasury).transfer(address(this).balance);
             owner.transfer(type(uint).max);
             originalDeposits = 0;
         }else{
             IERC20 aTOKEN = GetAToken();
-            uint amount = originalDeposits + ((aTOKEN.balanceOf(address(this) - originalDeposits)*0.7));//total deposits plus % of earnings
+            uint amount = originalDeposits + ((aTOKEN.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
             //aave + tranfers
             pool.withdraw(address(withdrawToken), amount, treasury);          
             pool.withdraw(address(withdrawToken), type(uint).max, owner);
@@ -140,17 +140,17 @@ contract JulzPay{
         selfdestruct(owner);
     }
 
-    function GetAToken() internal returns(IERC20){
-        if(withdrawToken == 0x6b175474e89094c44da98b954eedeac495271d0f){
+    function GetAToken() internal view returns(IERC20){
+        if(withdrawToken == address(0x6B175474E89094C44Da98b954EedeAC495271d0F)){
             return aDai;
         }
-        if(withdrawToken == 0xdac17f958d2ee523a2206206994597c13d831ec7){
+        if(withdrawToken == address(0xdAC17F958D2ee523a2206206994597C13D831ec7)){
             return aUSDT;
         }
-        if(withdrawToken == 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48){
+        if(withdrawToken == address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)){
             return aUSDC;
         }
-        if(withdrawToken == 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599){
+        if(withdrawToken == address(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599)){
             return aWBTC;
         }
     }

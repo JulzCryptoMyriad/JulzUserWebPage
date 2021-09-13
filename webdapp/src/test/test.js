@@ -52,37 +52,6 @@ describe("JulzPay", function() {
         assert.equal(token.toString().toLowerCase(), withdrawToken.toString().toLowerCase());
     });
 
-    describe("On Withdraw", () => {
-        it("should revert if less than a month has passed", async () => {
-            let ex;
-            try {
-                await contract.connect(treasury).withdraw();
-            }
-            catch (_ex) {
-                ex = _ex;
-            }
-            assert(ex, "Attempted to withdraw when Not ready to withdraw. Expected transaction to revert!");
-        });
-
-        it("should withdraw if more than a month has passed", async () => {
-           
-            const thirtynDays = 30 * 24 * 60 * 60;
-            await hre.network.provider.request({
-                method: "evm_increaseTime",
-                params: [thirtynDays]
-            });
-
-            const before = await ethers.provider.getBalance(treasury.getAddress());
-            const approve = await contract.withdraw();
-            const after = await ethers.provider.getBalance(treasury.getAddress());
-            assert.equal(after.sub(before).toString(), deposit.toString());
-
-            const balance = await ethers.provider.getBalance(contract.address);
-
-            assert.equal(balance, 0);
-            
-        });
-    });
 
     describe("On Destruct", () => {
         it("should not revert if  owner calls", async () => {
@@ -109,7 +78,7 @@ describe("JulzPay", function() {
     });
 
     describe("Fund Single Depositor", function () {
-        let weth, dai, usdc, tether;
+        let weth, dai, usdc, tether, wbtc;
         before(async () => {
             dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
             aDai = await ethers.getContractAt("IERC20Minimal", "0x028171bCA77440897B824Ca71D1c56caC55b68A3");
@@ -117,6 +86,7 @@ describe("JulzPay", function() {
             tether = await ethers.getContractAt("IERC20Minimal", USDT_ADDR);
             usdc = await ethers.getContractAt("IERC20Minimal", USDC_ADDR);
             weth = await ethers.getContractAt("IERC20Minimal", WETH_ADDR);
+            wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
         });
         describe("after a dai deposit", () => {
             const deposit = ethers.utils.parseEther("1");
@@ -146,6 +116,49 @@ describe("JulzPay", function() {
                 const abalance = await aDai.balanceOf(contract.address);
                 assert.equal(abalance.toString(), deposit.toString());
             }); 
+            describe("On Withdraw", () => {
+                let weth, dai, usdc, tether, wbtc;
+                beforeEach(async () => {
+                    dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
+                    aDai = await ethers.getContractAt("IERC20Minimal", "0x028171bCA77440897B824Ca71D1c56caC55b68A3");
+                    aWETH = await ethers.getContractAt("IERC20", "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e");
+                    tether = await ethers.getContractAt("IERC20Minimal", USDT_ADDR);
+                    usdc = await ethers.getContractAt("IERC20Minimal", USDC_ADDR);
+                    weth = await ethers.getContractAt("IERC20Minimal", WETH_ADDR);
+                    wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
+
+                });
+                it("should revert if less than a month has passed", async () => {
+                    let ex;
+                    try {
+                        await contract.connect(treasury).withdraw();
+                    }
+                    catch (_ex) {
+                        ex = _ex;
+                    }
+                    assert(ex, "Attempted to withdraw when Not ready to withdraw. Expected transaction to revert!");
+                });
+        
+                it("should withdraw if more than a month has passed", async () => {
+                   
+                    const thirtynDays = 30 * 24 * 60 * 60;
+                    await hre.network.provider.request({
+                        method: "evm_increaseTime",
+                        params: [thirtynDays]
+                    });
+                    const ownerBalanceBefore = await dai.balanceOf(owner.getAddress());                    
+                    const before = await dai.balanceOf(treasury.getAddress());
+                    const approve = await contract.withdraw();
+                    const after = await dai.balanceOf(treasury.getAddress());
+                    const ownerBalanceAfter = await dai.balanceOf(owner.getAddress());
+                    const balance = await dai.balanceOf(contract.address);
+
+                    assert.isTrue(after > before,"Withdraw didnt happened");
+                    assert.isTrue(ownerBalanceBefore < ownerBalanceAfter,"Owner should have earned too");
+                    assert.equal(balance, 0, "Funds are still on the contract");     
+                    assert.isTrue(after > deposit,"Interest was not earned");       
+                });
+            });
         });
 
         describe("after a eth deposit",() => {
