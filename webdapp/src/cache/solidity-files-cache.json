@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\jully\\Documents\\BOOTCAMP\\Final Project\\JulzUserWebPage\\webdapp\\src\\contracts\\JulzPay.sol": {
-      "lastModificationDate": 1631482500109,
-      "contentHash": "8980b55b8a73e94ab44f3519432fb59c",
+      "lastModificationDate": 1631541172403,
+      "contentHash": "d9d6566b8f7f0c42ec495eed02512671",
       "sourceName": "src/contracts/JulzPay.sol",
       "solcConfig": {
         "version": "0.7.5",

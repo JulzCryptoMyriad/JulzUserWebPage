@@ -121,12 +121,13 @@ describe("JulzPay", function() {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
             beforeEach(async () => {
+                const path = encodePath([WETH_ADDR, DAI_ADDR], [3000]);
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
                 await getERC20(dai, [addr1], true);
                 await dai.connect(depositorSigner).approve(contract.address, deposit);   
                 try{
-                    const tx = await contract.connect(depositorSigner).deposit(deposit, dai.address);
+                    const tx = await contract.connect(depositorSigner).deposit(deposit, dai.address, path);
                     await tx.wait();
                     
                 } catch(err){
@@ -148,18 +149,16 @@ describe("JulzPay", function() {
 
         describe("after a eth deposit",() => {
             const deposit = ethers.utils.parseEther("0.1");
-            let signer1, addr1, currentDepositBalance=0;
+            let signer1, addr1, currentDepositBalance = 0;
             beforeEach(async () => {
+                const path = encodePath([WETH_ADDR, DAI_ADDR], [3000]);
                 signer1 = await ethers.provider.getSigner(0);
                 try{
-                    const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR,{value: deposit});
-
+                    const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR, path,{value: deposit});
                     const receipt = await tx.wait();
                 }catch(err){
                     console.log('on eth deposit', err);
                 }
-
-                currentDepositBalance = await ethers.provider.getBalance(contract.address); 
             });
 
             it("should not have an ether balance", async function() {
@@ -167,20 +166,10 @@ describe("JulzPay", function() {
                 assert.equal(balance.toString(), "0");
               });
             
-              it("should have aWETH", async function() {
-                const balance = await aWETH.balanceOf(contract.address);
-                assert.equal(balance.toString(), deposit.toString());
+              it("should have aDai", async function() {
+                const abalance = await aDai.balanceOf(contract.address);
+                assert.equal(abalance.toString(), deposit.toString());
               });
-
-            it("it should be able to swap to expected token", async () => {//TODO # 51
-               /* const path = encodePath([WETH_ADDR, DAI_ADDR], [3000]);
-                const before = await dai.balanceOf(contract.address);
-                await contract.swap(WETH_ADDR, path);
-
-                const daiBalance = await dai.balanceOf(contract.address);
-                assert.isTrue(daiBalance > before);
-                */
-            });
         });
     });
 });
