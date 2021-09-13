@@ -43,7 +43,8 @@ class SignUp extends Component {
             const signer = provider.getSigner();
             await signer;
             console.log('signer:',await signer.getAddress());
-            const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},"0.1", signer);
+            const charge = (!this.state.checked)? "0.5":"0";
+            const contract = await deploy({ checked: this.state.checked,treasury: this.state.treasury, withdrawTokenAddress: this.state.token},charge, signer);
             //UPDATE USER registry
                      
             const upRequestOptions = {
