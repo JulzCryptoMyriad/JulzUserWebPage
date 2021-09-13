@@ -5,6 +5,7 @@ const DAI_ADDR = "0x6b175474e89094c44da98b954eedeac495271d0f";
 const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 const USDC_ADDR = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48";
 const USDT_ADDR = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+const WBTC_ADDR = "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599";
 
 const FEE_SIZE = 3;
 function encodePath(path, fees) {
@@ -51,7 +52,7 @@ describe("JulzPay", function() {
         assert.equal(token.toString().toLowerCase(), withdrawToken.toString().toLowerCase());
     });
 
- /*   describe("On Withdraw", () => {
+    describe("On Withdraw", () => {
         it("should revert if less than a month has passed", async () => {
             let ex;
             try {
@@ -81,7 +82,7 @@ describe("JulzPay", function() {
             assert.equal(balance, 0);
             
         });
-    });*///SHOULDNT TEST UNTIL #43
+    });
 
     describe("On Destruct", () => {
         it("should not revert if  owner calls", async () => {
