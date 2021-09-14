@@ -13,12 +13,19 @@ import Dashboard from "../components/Dashboard.js";
 class App extends Component{
   state = {
     logged : false,
-    userId : ""
+    userId : "",
+    constract: {},
+    abi:{},
+    txData: []
   }
 
-  onLog = (id) => {
+  onLog = (id, contract, abi, data) => {
     this.setState({ logged: true })
     this.setState({ userId : id})
+    this.setState({ contract : contract})
+    this.setState({ abi : abi})
+    this.setState({ txData : data})
+    console.log('data', this.state.txData)
   }
 
   render(){

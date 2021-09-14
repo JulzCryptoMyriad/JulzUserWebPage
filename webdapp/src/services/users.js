@@ -53,17 +53,22 @@ function validateCreate(user) {
   }
 
 async function login(user){
+    let txs;
     const data = await db.query(
-        "select * from  users where email = '"+user.email+"' and password = '"+user.password+"'", 
+        "SELECT *, CAST(abi as CHAR) charABI FROM  users where email = '"+user.email+"' and password = '"+user.password+"'", 
         [ ]
       );
       let message =  false;
     
       if (data.length > 0) {
         message = true;
+        txs = await db.query(
+          "select date, amount from transactions where idusers = "+ data[0].idusers, 
+          [ ]
+        );
       }
     
-      return {data};
+      return {data, txs};
 
 }
 
