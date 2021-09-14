@@ -32,7 +32,8 @@ import { Link } from "react-router-dom";
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         }else{
-            this.props.onLog(result.data[0].idusers,result.data[0].contractAddress,result.data[0].charABI,result.txs);
+            //get days left before next withdraw
+            this.props.onLog(result.data[0].idusers, result.data[0].contractAddress, result.data[0].charABI, result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw);
             this.props.history.push('/Dashboard');
         }         
       };

@@ -46,3 +46,11 @@ app.post('/update', async (req, res) => {
     console.error(`Error while updating user `, err.message);
   }
 }); 
+
+app.post('/withdraw', async (req, res) => { 
+  try {
+    res.json(await users.withdraw(req.body));
+  } catch (err) {
+    console.error(`Error while withdrawing amount `, err.message);
+  }
+}); 

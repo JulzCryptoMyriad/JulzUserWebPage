@@ -22,7 +22,7 @@ export default class SignIn extends PureComponent {
     //Get contract
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider;
-    const contract = new ethers.Contract(this.state.contract, this.state.abi, provider);
+    const contract = await new ethers.Contract(this.state.contract, this.state.abi, provider);
 
     //Connect to user
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -44,12 +44,12 @@ export default class SignIn extends PureComponent {
                     <Row>
                         <Col>                        
                             <Card>
-                                <Card.Body>You have successfully withdrawn: 0.00</Card.Body>
+                                <Card.Body>You have successfully withdrawn: {this.props.amount}</Card.Body>
                             </Card>
                         </Col>
                         <Col>
                             <Card>
-                                <Card.Body>You will be able to withdraw on: 1 day 2 minutes and 53 secons
+                                <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
                                     <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>
                                 </Card.Body>                                
                             </Card>

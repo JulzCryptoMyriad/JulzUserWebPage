@@ -16,16 +16,20 @@ class App extends Component{
     userId : "",
     constract: {},
     abi:{},
-    txData: []
+    txData: [],
+    amount: 0,
+    daysLeft : 30
   }
 
-  onLog = (id, contract, abi, data) => {
+  onLog = (id, contract, abi, data, amount, daysLeft) => {
     this.setState({ logged: true })
     this.setState({ userId : id})
     this.setState({ contract : contract})
     this.setState({ abi : abi})
     this.setState({ txData : data})
-    console.log('data', this.state.txData)
+    this.setState({ amount : amount})
+    this.setState({ daysLeft : daysLeft})
+    console.log(daysLeft);
   }
 
   render(){
