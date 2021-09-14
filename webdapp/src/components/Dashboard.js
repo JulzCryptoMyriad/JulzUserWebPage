@@ -1,7 +1,8 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Container, Row, Col, Card, Button} from 'react-bootstrap';
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from 'react';
+import {ethers} from 'ethers';
 import {
     ComposedChart,
     Line,
@@ -13,35 +14,44 @@ import {
     Legend
   } from 'recharts';
   
-  const data = [
-    {
-      date: 'Page A',
-      amount: 590,
-    },
-    {
-      date: 'Page B',
-      amount: 868,
-    },
-    {
-      date: 'Page C',
-      amount: 1397,
-    },
-    {
-      date: 'Page D',
-      amount: 1480,
-    },
-    {
-      date: 'Page E',
-      amount: 1520,
-    },
-    {
-      date: 'Page F',
-      amount: 1400,
-    },
-  ];
 
 export default class SignIn extends PureComponent {
 
+  async onWithdraw(e){
+    e.preventDefault();
+    //Get contract
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider;
+
+    const contract = await new ethers.Contract(this.props.contract, this.props.abi, provider);
+    //Connect to user
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const signer = provider.getSigner();
+    await signer;
+    console.log('signer:', await signer.getAddress());
+
+    //Call function
+    try{
+      const tx = await contract.connect(signer).withdraw();//
+      console.log('tx:',tx);
+    }catch(err){
+      console.log(err.data.message);
+    }
+
+
+    //fetch /withdraw to save tx
+    contract.on('Withdraw', (withdrawn) => {
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify( {id: this.props.userId, amount: withdrawn})
+      }
+
+      fetch("/withdraw", requestOptions)
+      .then((response) => response.json())
+      .then((data) =>  console.log('res',data));
+    });
+  }
     render(){
             return (
             <div className="App-container">
@@ -52,13 +62,13 @@ export default class SignIn extends PureComponent {
                     <Row>
                         <Col>                        
                             <Card>
-                                <Card.Body>You have successfully withdrawn: 0.00</Card.Body>
+                                <Card.Body>You have successfully withdrawn: {this.props.amount}</Card.Body>
                             </Card>
                         </Col>
                         <Col>
                             <Card>
-                                <Card.Body>You will be able to withdraw on: 1 day 2 minutes and 53 secons
-                                    <Button variant="success" className="Sign-item center">Withdraw</Button>
+                                <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
+                                    <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>
                                 </Card.Body>                                
                             </Card>
                         </Col>
@@ -70,7 +80,7 @@ export default class SignIn extends PureComponent {
                                     <ComposedChart
                                         width={500}
                                         height={400}
-                                        data={data}
+                                        data={this.props.txData}
                                         margin={{
                                             top: 20,
                                             right: 20,

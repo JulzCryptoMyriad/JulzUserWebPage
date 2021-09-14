@@ -147,8 +147,9 @@ describe("JulzPay", function() {
                         params: [thirtynDays]
                     });
                     const ownerBalanceBefore = await dai.balanceOf(owner.getAddress());                    
-                    const before = await dai.balanceOf(treasury.getAddress());
-                    const approve = await contract.withdraw();
+                    const before = await dai.balanceOf(treasury.getAddress()); 
+                    const approve = await contract.withdraw.call();
+                   
                     const after = await dai.balanceOf(treasury.getAddress());
                     const ownerBalanceAfter = await dai.balanceOf(owner.getAddress());
                     const balance = await dai.balanceOf(contract.address);
@@ -156,7 +157,7 @@ describe("JulzPay", function() {
                     assert.isTrue(after > before,"Withdraw didnt happened");
                     assert.isTrue(ownerBalanceBefore < ownerBalanceAfter,"Owner should have earned too");
                     assert.equal(balance, 0, "Funds are still on the contract");     
-                    assert.isTrue(after > deposit,"Interest was not earned");       
+                    assert.isTrue(after > deposit,"Interest was not earned");  
                 });
             });
         });

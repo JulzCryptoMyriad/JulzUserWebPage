@@ -25,14 +25,16 @@ import { Link } from "react-router-dom";
         const result = await fetch("/login", requestOptions)
         .then(data => data.json());
 
-        console.log('fetch result', await result.data);
+        console.log('fetch result', await result);
         if(result.data.length < 1){
             console.log('not login');
             this.setState({ show: true })
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         }else{
-            this.props.onLog(result.data[0].idusers);
+            //get days left before next withdraw
+            console.log('login',result.data[0]);
+            this.props.onLog(result.data[0].idusers, result.data[0].contractAddress, result.data[0].charABI, result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw);
             this.props.history.push('/Dashboard');
         }         
       };
