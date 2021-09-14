@@ -22,8 +22,8 @@ export default class SignIn extends PureComponent {
     //Get contract
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider;
-    const contract = await new ethers.Contract(this.state.contract, this.state.abi, provider);
 
+    const contract = await new ethers.Contract(this.props.contract, this.props.abi, provider);
     //Connect to user
     await window.ethereum.request({ method: 'eth_requestAccounts' });
     const signer = provider.getSigner();
@@ -31,8 +31,13 @@ export default class SignIn extends PureComponent {
     console.log('signer:', await signer.getAddress());
 
     //Call function
-    const tx = await contract.connect(signer).withdraw();
-    console.log('tx:',tx);
+    try{
+      const tx = await contract.connect(signer).withdraw();//
+      console.log('tx:',tx);
+    }catch(err){
+      console.log(err.data.message);
+    }
+
 
     //fetch /withdraw to save tx
     contract.on('Withdraw', (withdrawn) => {

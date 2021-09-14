@@ -33,6 +33,7 @@ import { Link } from "react-router-dom";
             e.nativeEvent.stopImmediatePropagation();
         }else{
             //get days left before next withdraw
+            console.log('login',result.data[0]);
             this.props.onLog(result.data[0].idusers, result.data[0].contractAddress, result.data[0].charABI, result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw);
             this.props.history.push('/Dashboard');
         }         

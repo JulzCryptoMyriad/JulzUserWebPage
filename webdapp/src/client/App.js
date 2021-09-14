@@ -29,7 +29,7 @@ class App extends Component{
     this.setState({ txData : data})
     this.setState({ amount : amount})
     this.setState({ daysLeft : daysLeft})
-    console.log(daysLeft);
+    console.log('days:',this.state.daysLeft,'contract', this.state.contract);
   }
 
   render(){

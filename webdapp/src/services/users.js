@@ -16,7 +16,7 @@ async function create(user){
     validateCreate(user);
   
     const result = await db.query(
-      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"')", 
+      "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress,lastWithdraw, withdrawn) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"',sysdate(), 0)", 
       []
     );
 
@@ -63,7 +63,7 @@ async function login(user){
       if (data.length > 0) {
         message = true;
         txs = await db.query(
-          "select date, amount from transactions where idusers = "+ data[0].idusers, 
+          "select distinct date, amount,hash from transactions where idusers = "+ data[0].idusers, 
           [ ]
         );
       }
