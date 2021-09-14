@@ -44,7 +44,7 @@ export default class SignIn extends PureComponent {
       const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify( {id: this.props.userId, amount: withdrawn})
+          body: JSON.stringify( {id: this.props.userId, amount: ethers.utils.formatEther(withdrawn)})
       }
 
       fetch("/withdraw", requestOptions)

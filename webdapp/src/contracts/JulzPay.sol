@@ -66,7 +66,7 @@ contract JulzPay{
     }
     event Withdraw(uint);
     function withdraw() external{
-        require(lastWithdrawDate + 30 days <= block.timestamp, "Not ready to withdraw");  
+        require(lastWithdrawDate + 30 days <= block.timestamp || monthly == false, "Not ready to withdraw");  
         require(processing == false);
         processing = true;  //avoids reentrancy
         uint withdrawn;
