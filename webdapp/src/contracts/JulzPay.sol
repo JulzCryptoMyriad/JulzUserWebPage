@@ -64,12 +64,12 @@ contract JulzPay{
             owner.transfer(address(this).balance);
         }
     }
-
-    function withdraw() external returns(uint withdrawn){
+    event Withdraw(uint);
+    function withdraw() external{
         require(lastWithdrawDate + 30 days <= block.timestamp, "Not ready to withdraw");  
         require(processing == false);
         processing = true;  //avoids reentrancy
-        
+        uint withdrawn;
         if(withdrawToken == WETH_ADD){           
             uint balance =  originalDeposits + ((aWETH.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
             aWETH.approve(address(gateway), balance);
@@ -91,6 +91,7 @@ contract JulzPay{
 
         lastWithdrawDate = block.timestamp;        
         processing = false;
+        emit Withdraw(withdrawn);
     }
 
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
