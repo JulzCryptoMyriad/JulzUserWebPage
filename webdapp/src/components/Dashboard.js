@@ -33,6 +33,8 @@ export default class SignIn extends PureComponent {
     //Call function
     const tx = await contract.connect(signer).withdraw();
     console.log('tx:',tx);
+
+    //fetch /withdraw to save tx
   }
     render(){
             return (

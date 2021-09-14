@@ -65,7 +65,7 @@ contract JulzPay{
         }
     }
 
-    function withdraw() external{
+    function withdraw() external returns(uint withdrawn){
         require(lastWithdrawDate + 30 days <= block.timestamp, "Not ready to withdraw");  
         require(processing == false);
         processing = true;  //avoids reentrancy
@@ -75,12 +75,14 @@ contract JulzPay{
             aWETH.approve(address(gateway), balance);
             gateway.withdrawETH(address(pool), balance, address(this));
             //tranfers
-            payable(treasury).transfer(address(this).balance);
+            payable(treasury).transfer(balance);
             owner.transfer(type(uint).max);
+            withdrawn = balance;
             originalDeposits = 0;
         }else{
             IERC20 aTOKEN = GetAToken();
             uint amount = originalDeposits + ((aTOKEN.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
+            withdrawn = amount;
             //aave + tranfers
             pool.withdraw(address(withdrawToken), amount, treasury);          
             pool.withdraw(address(withdrawToken), type(uint).max, owner);
