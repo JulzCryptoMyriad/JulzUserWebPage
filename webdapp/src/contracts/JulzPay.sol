@@ -70,13 +70,14 @@ contract JulzPay{
         require(processing == false);
         processing = true;  //avoids reentrancy
         uint withdrawn;
-        if(withdrawToken == WETH_ADD){           
-            uint balance =  originalDeposits + ((aWETH.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
-            aWETH.approve(address(gateway), balance);
-            gateway.withdrawETH(address(pool), balance, address(this));
+        if(withdrawToken == WETH_ADD){ 
+            uint interest =  aWETH.balanceOf(address(this)) - originalDeposits;  
+            uint balance =  originalDeposits + ((interest/10)*7);//70% of interest
+            aWETH.approve(address(gateway), aWETH.balanceOf(address(this)));
+            gateway.withdrawETH(address(pool), aWETH.balanceOf(address(this)), address(this));
             //tranfers
             payable(treasury).transfer(balance);
-            owner.transfer(type(uint).max);
+            payable(owner).transfer(address(this).balance);
             withdrawn = balance;
             originalDeposits = 0;
         }else{
@@ -105,13 +106,17 @@ contract JulzPay{
         }
 
         if(!(withdrawToken == _token)){
+            console.log('voy a swapear');
             sdeposit = swap(withdrawToken, path, _amount);
+            console.log('me depositaron', sdeposit);
             originalDeposits += sdeposit;
         }else{
-             originalDeposits += _amount;
+            sdeposit = _amount;
+            originalDeposits += _amount;
         }
 
         if(withdrawToken == WETH_ADD){
+            console.log('tamo aqui');
             _amount = msg.value;
             gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
         }else{       
