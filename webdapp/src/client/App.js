@@ -6,6 +6,7 @@ import Header from "../components/Header.js";
 import Home from "../components/Home.js";
 import SignUp from "../components/SignUp.js";
 import SignIn from "../components/SignIn.js";
+import brain from '../assets/imgs/brain.png';
 import Docs from "../components/Docs.js";
 import About from "../components/About.js";
 import Dashboard from "../components/Dashboard.js";
@@ -34,19 +35,26 @@ class App extends Component{
 
   render(){
     return (
-      <div className="App">
-       <Header {...this.state}/>
-       <BrowserRouter>
-        <Switch>
-          <Route exact  path="/" component={Home} />
-          <Route path="/SignUp" render={() => <SignUp onLog ={this.onLog}/>}/>   
-          <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
-          <Route path="/Docs" component={Docs} />
-          <Route path="/About" component={About} />
-          <Route path="/SignOut" component={Home} />
-          {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state}/>} />: <Route path="/Dashboard" component={Home}/>}
-        </Switch>
-      </BrowserRouter>
+      <div>
+        <div className="App">
+        <Header {...this.state}/>
+        <BrowserRouter>
+          <Switch>
+            <Route exact  path="/" component={Home} />
+            <Route path="/SignUp" render={() => <SignUp onLog ={this.onLog}/>}/>   
+            <Route path="/SignIn" render={() => <SignIn onLog ={this.onLog}/>}/>
+            <Route path="/Docs" component={Docs} />
+            <Route path="/About" component={About} />
+            <Route path="/SignOut" component={Home} />
+            {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state}/>} />: <Route path="/Dashboard" component={Home}/>}
+          </Switch>
+        </BrowserRouter>
+        </div>
+        <div>
+          <footer className="footer--pin">
+                  Powered by Julissa's Brain<img src={brain} alt="Brain" height="45"/>
+              </footer>
+        </div>
       </div>
     );
   }
