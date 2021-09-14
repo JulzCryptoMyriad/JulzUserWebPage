@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  padding-bottom: 2.5rem; 
 }
 
 .Brand {
@@ -68,4 +69,15 @@
 .carousel-description{
   color: black;
   background-color: cadetblue;
+}
+
+.footer--pin{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2rem;
+  background-color: cadetblue;
+  text-align: center;
+  color: honeydew;
 }
