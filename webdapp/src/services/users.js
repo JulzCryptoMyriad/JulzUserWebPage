@@ -89,7 +89,7 @@ async function update(data){
 
 async function withdraw(data){
   const result2 = await db.query(
-    "UPDATE users SET withdrawn = "+data.amount+", lastwithdraw = date(sysdate()) Where idusers = "+data.id+"", 
+    "UPDATE users SET withdrawn = withdrawn+"+data.amount+", lastwithdraw = date(sysdate()) Where idusers = "+data.id+"", 
     []
   ); 
     let message =  "There was an error on the update";

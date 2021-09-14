@@ -35,6 +35,17 @@ export default class SignIn extends PureComponent {
     console.log('tx:',tx);
 
     //fetch /withdraw to save tx
+    contract.on('Withdraw', (withdrawn) => {
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify( {id: this.props.userId, amount: withdrawn})
+      }
+
+      fetch("/withdraw", requestOptions)
+      .then((response) => response.json())
+      .then((data) =>  console.log('res',data));
+    });
   }
     render(){
             return (
