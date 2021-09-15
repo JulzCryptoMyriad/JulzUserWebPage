@@ -52,7 +52,7 @@ class App extends Component{
         </div>
         <div>
           <footer className="footer--pin">
-                  Powered by Julissa's Brain<img src={brain} alt="Brain" height="45"/>
+                  Powered by Julissa's Brain<img src={brain} alt="Brain" height="40"/>
               </footer>
         </div>
       </div>

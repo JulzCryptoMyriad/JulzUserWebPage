@@ -82,11 +82,17 @@ contract JulzPay{
             originalDeposits = 0;
         }else{
             IERC20 aTOKEN = GetAToken();
-            uint amount = originalDeposits + ((aTOKEN.balanceOf(address(this)) - originalDeposits)/10)*7;//70% of interest
+            uint interest =  aTOKEN.balanceOf(address(this)) - originalDeposits;  
+            uint amount =  originalDeposits + ((interest/10)*7);//70% of interest
             withdrawn = amount;
             //aave + tranfers
-            pool.withdraw(address(withdrawToken), amount, treasury);          
-            pool.withdraw(address(withdrawToken), type(uint).max, owner);
+            if(amount >  aTOKEN.balanceOf(address(this))){//if there were some lost on the protocol
+                pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), treasury);   
+            }else{
+                pool.withdraw(address(withdrawToken), amount, treasury);         
+                pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), owner);
+            }
+
             originalDeposits = 0;
         }         
 
@@ -106,9 +112,9 @@ contract JulzPay{
         }
 
         if(!(withdrawToken == _token)){
-            console.log('voy a swapear');
+            console.log('about to swap');
             sdeposit = swap(withdrawToken, path, _amount);
-            console.log('me depositaron', sdeposit);
+            console.log('Swap deposited:', sdeposit);
             originalDeposits += sdeposit;
         }else{
             sdeposit = _amount;
@@ -116,7 +122,6 @@ contract JulzPay{
         }
 
         if(withdrawToken == WETH_ADD){
-            console.log('tamo aqui');
             _amount = msg.value;
             gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
         }else{       
