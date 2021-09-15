@@ -58,7 +58,7 @@ class SignUp extends Component {
             .then((data) =>  console.log('res', data));
             await update;
             //REDIRECTING
-            this.props.onLog(userid,contract.address,contract.abi,[],0,30);
+            this.props.onLog(userid,contract.address,contract.abi,[],0,30,[{total:0}]);
             this.props.history.push('/Dashboard');
         }else{
             console.log('not login');

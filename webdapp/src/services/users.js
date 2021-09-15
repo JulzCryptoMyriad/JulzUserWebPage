@@ -62,13 +62,15 @@ async function login(user){
     
       if (data.length > 0) {
         message = true;
-        txs = await db.query(
-          "select distinct date, amount,hash from transactions where idusers = "+ data[0].idusers, 
+        txsPending = await db.query(
+          "select distinct date, amount,hash from transactions where idusers = "+ data[0].idusers+" and withdraw = false", 
           [ ]
         );
+        total = await db.query("select Sum(amount) total from transactions where idusers = "+ data[0].idusers+" and withdraw = false group by idusers;",[]);
+        if (total.length <1)total=[{total:0}]
       }
     
-      return {data, txs};
+      return {data, txs:txsPending, total};
 
 }
 
@@ -90,6 +92,10 @@ async function update(data){
 async function withdraw(data){
   const result2 = await db.query(
     "UPDATE users SET withdrawn = withdrawn+"+data.amount+", lastwithdraw = date(sysdate()) Where idusers = "+data.id+"", 
+    []
+  ); 
+  const result3 = await db.query(
+    "update transactions set withdraw = true where idusers = "+data.id+"", 
     []
   ); 
     let message =  "There was an error on the update";

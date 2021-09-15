@@ -33,7 +33,6 @@ contract JulzPay{
     uint256 public lastWithdrawDate;
     address public treasury;    
     bool private processing;
-    uint private originalDeposits;
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
     // the mainnet AAVE v2 lending pool
     ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
@@ -65,9 +64,9 @@ contract JulzPay{
         }
     }
     event Withdraw(uint);
-    function withdraw() external{
+    function withdraw(uint originalDeposits) external{
         require(lastWithdrawDate + 30 days <= block.timestamp || monthly == false, "Not ready to withdraw");  
-        require(processing == false);
+        require(processing == false,"Already processing");
         processing = true;  //avoids reentrancy
         uint withdrawn;
         if(withdrawToken == WETH_ADD){ 
@@ -79,21 +78,18 @@ contract JulzPay{
             payable(treasury).transfer(balance);
             payable(owner).transfer(address(this).balance);
             withdrawn = balance;
-            originalDeposits = 0;
         }else{
             IERC20 aTOKEN = GetAToken();
             uint interest =  aTOKEN.balanceOf(address(this)) - originalDeposits;  
             uint amount =  originalDeposits + ((interest/10)*7);//70% of interest
             withdrawn = amount;
-            //aave + tranfers
+           //aave + tranfers
             if(amount >  aTOKEN.balanceOf(address(this))){//if there were some lost on the protocol
                 pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), treasury);   
             }else{
                 pool.withdraw(address(withdrawToken), amount, treasury);         
                 pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), owner);
             }
-
-            originalDeposits = 0;
         }         
 
         lastWithdrawDate = block.timestamp;        
@@ -105,20 +101,17 @@ contract JulzPay{
 
     function deposit(uint _amount, address _token, bytes memory path) external payable{
         uint256 sdeposit;
-
         if(!(WETH_ADD == _token)){
             IERC20 depositor =  IERC20(_token);            
             depositor.transferFrom(msg.sender, address(this), _amount);
         }
 
         if(!(withdrawToken == _token)){
-            console.log('about to swap');
+            console.log('about to swap', address(this).balance);
             sdeposit = swap(withdrawToken, path, _amount);
             console.log('Swap deposited:', sdeposit);
-            originalDeposits += sdeposit;
         }else{
             sdeposit = _amount;
-            originalDeposits += _amount;
         }
 
         if(withdrawToken == WETH_ADD){
