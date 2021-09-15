@@ -32,10 +32,10 @@ export default class SignIn extends PureComponent {
 
     //Call function
     try{
-      const tx = await contract.connect(signer).withdraw();//
+      const tx = await contract.connect(signer).withdraw(ethers.utils.parseEther(this.props.total.total));
       console.log('tx:',tx);
     }catch(err){
-      console.log(err.data.message);
+      console.log(err);
     }
 
 
@@ -50,6 +50,8 @@ export default class SignIn extends PureComponent {
       fetch("/withdraw", requestOptions)
       .then((response) => response.json())
       .then((data) =>  console.log('res',data));
+
+      this.props.onWithdraw(ethers.utils.formatEther(withdrawn.toString()));
     });
   }
     render(){
@@ -66,16 +68,22 @@ export default class SignIn extends PureComponent {
                             </Card>
                         </Col>
                         <Col>
+                          <Card>
+                              <Card.Body>You have pending to withdraw (not including interests): {this.props.total.total}</Card.Body>
+                          </Card>
+                        </Col>
+                        <Col>
                             <Card>
                                 <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
                                     <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>
                                 </Card.Body>                                
                             </Card>
                         </Col>
-                    </Row>
+                    </Row>                    
                     <Row>
                         <Col>
                             <Card className="Sign-item">
+                              <Card.Title>Deposits Pending To Withdraw</Card.Title>
                                 <Card.Body>
                                     <ComposedChart
                                         width={500}
