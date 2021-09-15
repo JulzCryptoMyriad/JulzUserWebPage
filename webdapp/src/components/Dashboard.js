@@ -1,6 +1,6 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container, Row, Col, Card, Button} from 'react-bootstrap';
+import {Container, Row, Col, Card, Button, Spinner} from 'react-bootstrap';
 import React, { PureComponent } from 'react';
 import {ethers} from 'ethers';
 import {
@@ -16,44 +16,50 @@ import {
   
 
 export default class SignIn extends PureComponent {
-
-  async onWithdraw(e){
-    e.preventDefault();
-    //Get contract
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider;
-
-    const contract = await new ethers.Contract(this.props.contract, this.props.abi, provider);
-    //Connect to user
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    const signer = provider.getSigner();
-    await signer;
-    console.log('signer:', await signer.getAddress());
-
-    //Call function
-    try{
-      const tx = await contract.connect(signer).withdraw(ethers.utils.parseEther(this.props.total.total));
-      console.log('tx:',tx);
-    }catch(err){
-      console.log(err);
+    state = {
+      showSpinner: false
     }
+    async onWithdraw(e){
+      e.preventDefault();
+      this.setState({showSpinner: true});
+      //Get contract
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider;
 
+      const contract = await new ethers.Contract(this.props.contract, this.props.abi, provider);
+      //Connect to user
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const signer = provider.getSigner();
+      await signer;
+      console.log('signer:', await signer.getAddress());
 
-    //fetch /withdraw to save tx
-    contract.on('Withdraw', (withdrawn) => {
-      const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify( {id: this.props.userId, amount: ethers.utils.formatEther(withdrawn)})
+      //Call function
+      try{
+        const tx = await contract.connect(signer).withdraw(ethers.utils.parseEther(this.props.total.total));
+        console.log('tx:',tx);
+      }catch(err){
+        console.log(err);
+        this.setState({showSpinner: false});
       }
 
-      fetch("/withdraw", requestOptions)
-      .then((response) => response.json())
-      .then((data) =>  console.log('res',data));
 
-      this.props.onWithdraw(ethers.utils.formatEther(withdrawn.toString()));
-    });
-  }
+      //fetch /withdraw to save tx
+      contract.on('Withdraw', async (withdrawn) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify( {id: this.props.userId, amount: ethers.utils.formatEther(withdrawn)})
+        }
+
+        const result = fetch("/withdraw", requestOptions)
+        .then(data => data.json());
+        await result;
+        console.log('result', result);
+        this.props.onWithdraw(result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total);
+        this.setState({showSpinner: false});
+      });
+    }
+    
     render(){
             return (
             <div className="App-container">
@@ -75,7 +81,12 @@ export default class SignIn extends PureComponent {
                         <Col>
                             <Card>
                                 <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
-                                    <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>
+                                {this.state.showSpinner?                                    
+                                    <Spinner animation="border" role="status">
+                                      <span className="visually-hidden">Loading...</span>
+                                    </Spinner>
+                                    : <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>}                                 
+
                                 </Card.Body>                                
                             </Card>
                         </Col>

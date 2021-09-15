@@ -102,9 +102,15 @@ async function withdraw(data){
 
     if (result2.affectedRows) {
       message = "All went great on the update";
+      txsPending = await db.query(
+        "select distinct date, amount,hash from transactions where idusers = "+ data[0].idusers+" and withdraw = false", 
+        [ ]
+      );
+      total = await db.query("select Sum(amount) total from transactions where idusers = "+ data[0].idusers+" and withdraw = false group by idusers;",[]);
+      if (total.length <1)total=[{total:0}]
     }
 
-    return message;
+    return login([{idusers: data.id}]);
 
 }
 
