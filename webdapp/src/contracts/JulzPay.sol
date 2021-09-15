@@ -5,6 +5,7 @@ pragma abicoder v2;
 import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 import "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol";
+import '@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
 import "./ILendingPool.sol";
 import "./IWETHGateway.sol";
 import "hardhat/console.sol";
@@ -33,6 +34,7 @@ contract JulzPay{
     uint256 public lastWithdrawDate;
     address public treasury;    
     bool private processing;
+    IUniswapV2Router01 uniswapRouter2 = IUniswapV2Router01(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
     // the mainnet AAVE v2 lending pool
     ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
@@ -107,8 +109,9 @@ contract JulzPay{
         }
 
         if(!(withdrawToken == _token)){
-            console.log('about to swap', address(this).balance);
-            sdeposit = swap(withdrawToken, path, _amount);
+            IERC20 depositor =  IERC20(_token);    
+            console.log('about to swap', address(this).balance, _amount, depositor.balanceOf(address(this)));
+            sdeposit = swap(_token, path, _amount);
             console.log('Swap deposited:', sdeposit);
         }else{
             sdeposit = _amount;
@@ -129,17 +132,37 @@ contract JulzPay{
 
         IERC20 erc20 =  IERC20(_token);
         if(!(_token == WETH_ADD)){
-            erc20.approve(address(router), amount);
+            console.log('i approve',_token);
+            bool success = erc20.approve(address(router), amount);
+            require(success, "failed approve from this to uniswapaddress");
+        }else{
+            erc20.approve(address(uniswapRouter2), amount);
         }
 
-        ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
-            path, address(this), block.timestamp,  amount, 0
-        );
+        if(WETH_ADD != withdrawToken){
+            //token -->Token
+                ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
+                    path, address(this), block.timestamp,  amount, 0
+                );
 
-        result = router.exactInput{ value:amount }(params);
+                result = router.exactInput{ value:amount }(params);
+        }else{
+            //token --> eth
+            address[] memory _path = new address[](2);
+            _path[0] = _token;
+            _path[1] = WETH_ADD;
+             IERC20 nerc20 =  IERC20(WETH_ADD);
+             nerc20.approve(address(uniswapRouter2), amount);
+            uint amountRequired  = uniswapRouter2.getAmountsIn(amount, _path)[0];
+            console.log('did i survive',amountRequired);
+            uint[] memory amounts = uniswapRouter2.swapTokensForExactETH(amountRequired-1, amount, _path, address(this), block.timestamp);
+        }
+
     }
 
-    receive() external payable {}
+    receive() external payable {
+        console.log('val', msg.value);
+    }
 
     function destruct() public {
         require(msg.sender == owner, "Not the owner");

@@ -353,7 +353,7 @@ describe("JulzPay eth preference", function() {
                     await tx.wait();
                     
                 } catch(err){
-                  //  console.log("Error:",err);
+                   console.log(":",err);
                 }                             
                 currentDepositBalance = await dai.balanceOf(contract.address);
             });
