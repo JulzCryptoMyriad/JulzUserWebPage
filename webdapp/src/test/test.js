@@ -436,3 +436,4 @@ describe("JulzPay eth preference", function() {
         });
     });
 });
+

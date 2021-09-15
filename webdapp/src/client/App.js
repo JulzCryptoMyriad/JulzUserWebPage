@@ -34,10 +34,11 @@ class App extends Component{
     this.setState({ total : total[0]})
   }
 
-  onWithdraw = (withdrawn) => {
-    console.log(Number(this.state.amount),Number(withdrawn));
-    this.setState({ amount : Number(this.state.amount)+Number(withdrawn)})
-    this.setState({ total : "0"})
+  onWithdraw = (data, amount, daysLeft, total) => {
+    this.setState({ txData : data})
+    this.setState({ amount : amount})
+    this.setState({ daysLeft : daysLeft})
+    this.setState({ total : total[0]})
   }
 
   render(){
