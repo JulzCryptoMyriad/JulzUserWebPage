@@ -53,7 +53,7 @@ function validateCreate(user) {
 }
 
 async function login(user){
-    let txs;
+    let txsPending;
     const data = await db.query(
         "SELECT *, CAST(abi as CHAR) charABI,Datediff(DATE_ADD(lastWithdraw, INTERVAL 30 DAY),sysdate())  as nextWithdraw FROM  users where email = '"+user.email+"' and password = '"+user.password+"'", 
         [ ]
@@ -102,12 +102,6 @@ async function withdraw(data){
 
     if (result2.affectedRows) {
       message = "All went great on the update";
-      txsPending = await db.query(
-        "select distinct date, amount,hash from transactions where idusers = "+ data[0].idusers+" and withdraw = false", 
-        [ ]
-      );
-      total = await db.query("select Sum(amount) total from transactions where idusers = "+ data[0].idusers+" and withdraw = false group by idusers;",[]);
-      if (total.length <1)total=[{total:0}]
     }
 
     return login([{idusers: data.id}]);

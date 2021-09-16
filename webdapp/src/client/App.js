@@ -35,10 +35,11 @@ class App extends Component{
   }
 
   onWithdraw = (data, amount, daysLeft, total) => {
+    console.log('entre',total );
     this.setState({ txData : data})
-    this.setState({ amount : amount})
+    this.setState({ amount : Number(this.state.total)+Number(this.state.amount)})
     this.setState({ daysLeft : daysLeft})
-    this.setState({ total : total[0]})
+    this.setState({ total : 0})
   }
 
   render(){

@@ -54,8 +54,8 @@ export default class SignIn extends PureComponent {
         const result = fetch("/withdraw", requestOptions)
         .then(data => data.json());
         await result;
-        console.log('result', result);
-        this.props.onWithdraw(result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total);
+        console.log('result', await result.data);
+        this.props.onWithdraw(await result.txs, 0,30, await result.total);
         this.setState({showSpinner: false});
       });
     }
