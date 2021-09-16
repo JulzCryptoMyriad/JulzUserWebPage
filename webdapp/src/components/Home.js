@@ -10,7 +10,7 @@ export default class Home extends Component {
     render(){
             return (
                 <div className="App-container">
-                    <Carousel>
+                    <Carousel className="Home">
                         <Carousel.Item>
                             <img
                             className="d-block w-100"

@@ -104,23 +104,22 @@ contract JulzPay{
         if(!(WETH_ADD == _token)){
             IERC20 depositor =  IERC20(_token);            
             depositor.transferFrom(msg.sender, address(this), _amount);
+            console.log(depositor.balanceOf(address(this)));
         }
 
         if(!(withdrawToken == _token)){
-            console.log('about to swap', address(this).balance);
-            sdeposit = swap(withdrawToken, path, _amount);
-            console.log('Swap deposited:', sdeposit);
+            sdeposit = swap(_token, path, _amount);
         }else{
             sdeposit = _amount;
         }
 
-        if(withdrawToken == WETH_ADD){
+        if(withdrawToken == WETH_ADD && sdeposit == _amount){//Only enter if preferred token is eth and deposited token was eth
             _amount = msg.value;
             gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
-        }else{       
+        }else{     
             IERC20 erc20 =  IERC20(withdrawToken);      
-            erc20.approve(address(pool), _amount);
-            pool.deposit(withdrawToken, _amount, address(this), 0);  
+            erc20.approve(address(pool), erc20.balanceOf(address(this)));
+            pool.deposit(withdrawToken, erc20.balanceOf(address(this)), address(this), 0);  
         }
         emit Paid( msg.sender, _amount, sdeposit, _token);
     }
@@ -128,13 +127,16 @@ contract JulzPay{
     function swap(address _token, bytes memory path, uint amount) public returns(uint256 result){
 
         IERC20 erc20 =  IERC20(_token);
-        if(!(_token == WETH_ADD)){
+        //if(!(_token == WETH_ADD)){
             erc20.approve(address(router), amount);
-        }
+        //}
 
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp,  amount, 0
         );
+        if(address(this).balance == 0){
+            amount = 0;
+        }
 
         result = router.exactInput{ value:amount }(params);
     }
