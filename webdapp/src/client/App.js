@@ -20,10 +20,11 @@ class App extends Component{
     txData: [],
     amount: 0,//withdrawn amount
     daysLeft : 30,
-    total: 0//inside the contract
+    total: 0,//inside the contract
+    monthly: true//if restriction about withdraw
   }
 
-  onLog = (id, contract, abi, data, amount, daysLeft, total) => {
+  onLog = (id, contract, abi, data, amount, daysLeft, total, monthly) => {
     this.setState({ logged: true })
     this.setState({ userId : id})
     this.setState({ contract : contract})
@@ -31,15 +32,16 @@ class App extends Component{
     this.setState({ txData : data})
     this.setState({ amount : amount})
     this.setState({ daysLeft : daysLeft})
+    this.setState({ monthly : monthly})
     this.setState({ total : total[0]})
   }
 
-  onRefresh = (data, amount, daysLeft, total) => {
-    console.log('entre',total );
+  onRefresh = (data, amount, daysLeft, total, monthly) => {
     this.setState({ txData : data})
     this.setState({ amount : amount})
     this.setState({ daysLeft : daysLeft})
     this.setState({ total : total})
+    this.setState({ monthly : monthly})
   }
 
   render(){
@@ -55,7 +57,7 @@ class App extends Component{
             <Route path="/Docs" component={Docs} />
             <Route path="/About" component={About} />
             <Route path="/SignOut" render={() => <SignIn onLog ={this.onLog}/>}/>
-            {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state} onWithdraw={this.onRefresh.bind(this)}/>} />: <Route path="/Dashboard" component={Home}/>}
+            {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state} onRefresh={this.onRefresh.bind(this)}/>} />: <Route path="/Dashboard" component={Home}/>}
           </Switch>
         </BrowserRouter>
         </div>

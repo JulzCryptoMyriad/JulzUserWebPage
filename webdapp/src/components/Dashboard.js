@@ -1,6 +1,5 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Refresh from '../assets/imgs/refresh.jpg';
 import {Container, Row, Col, Card, Button, Spinner} from 'react-bootstrap';
 import React, { PureComponent } from 'react';
 import {ethers} from 'ethers';
@@ -20,6 +19,7 @@ export default class SignIn extends PureComponent {
     state = {
       showSpinner: false
     }
+
     async onWithdraw(e){
       e.preventDefault();
       this.setState({showSpinner: true});
@@ -57,10 +57,24 @@ export default class SignIn extends PureComponent {
         await result;
         console.log('result', await result.data);
         this.setState({showSpinner: false});
-        //this.props.onRefresh(result.txs, result.data[0].withdrawn, result.data[0].nextWithdraw, 0);
+        this.onRefresh();
       });
     }
-    async onRefresh(e){}
+
+    async onRefresh(){
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify( {id: this.props.userId})
+      };
+      const result = await fetch("/refresh", requestOptions)
+      .then(data => data.json());
+
+      if(result.data.length > 0){        
+        //get days left before next withdraw
+        this.props.onRefresh(result.txsPending, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total[0],result.data[0].restriction);   
+      }  
+    }
     
     render(){
             return (
@@ -82,7 +96,7 @@ export default class SignIn extends PureComponent {
                         </Col>
                         <Col>
                             <Card>
-                                <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
+                                <Card.Body>{this.props.monthly? <p>You will be able to withdraw on {this.props.daysLeft} day(s)</p>:<p></p>}
                                 {this.state.showSpinner?                                    
                                     <Spinner animation="border" role="status">
                                       <span className="visually-hidden">Loading...</span>

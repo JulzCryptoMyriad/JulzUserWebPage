@@ -54,3 +54,12 @@ app.post('/withdraw', async (req, res) => {
     console.error(`Error while withdrawing amount `, err.message);
   }
 }); 
+
+app.post('/refresh', async (req, res) => { 
+  try {
+    console.log(req.body);
+    res.json(await users.refresh(req.body));
+  } catch (err) {
+    console.error(`Error while withdrawing amount `, err.message);
+  }
+}); 
