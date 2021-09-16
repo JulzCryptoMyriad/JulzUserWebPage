@@ -18,9 +18,9 @@ class App extends Component{
     constract: {},
     abi:{},
     txData: [],
-    amount: 0,
+    amount: 0,//withdrawn amount
     daysLeft : 30,
-    total: 0
+    total: 0//inside the contract
   }
 
   onLog = (id, contract, abi, data, amount, daysLeft, total) => {
@@ -34,12 +34,12 @@ class App extends Component{
     this.setState({ total : total[0]})
   }
 
-  onWithdraw = (data, amount, daysLeft, total) => {
+  onRefresh = (data, amount, daysLeft, total) => {
     console.log('entre',total );
     this.setState({ txData : data})
-    this.setState({ amount : Number(this.state.total)+Number(this.state.amount)})
+    this.setState({ amount : amount})
     this.setState({ daysLeft : daysLeft})
-    this.setState({ total : 0})
+    this.setState({ total : total})
   }
 
   render(){
@@ -55,7 +55,7 @@ class App extends Component{
             <Route path="/Docs" component={Docs} />
             <Route path="/About" component={About} />
             <Route path="/SignOut" render={() => <SignIn onLog ={this.onLog}/>}/>
-            {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state} onWithdraw={this.onWithdraw.bind(this)}/>} />: <Route path="/Dashboard" component={Home}/>}
+            {this.state.logged? <Route path="/Dashboard" render={() => <Dashboard {...this.state} onWithdraw={this.onRefresh.bind(this)}/>} />: <Route path="/Dashboard" component={Home}/>}
           </Switch>
         </BrowserRouter>
         </div>

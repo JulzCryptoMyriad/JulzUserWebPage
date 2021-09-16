@@ -1,5 +1,6 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Refresh from '../assets/imgs/refresh.jpg';
 import {Container, Row, Col, Card, Button, Spinner} from 'react-bootstrap';
 import React, { PureComponent } from 'react';
 import {ethers} from 'ethers';
@@ -52,12 +53,14 @@ export default class SignIn extends PureComponent {
         }
 
         const result = fetch("/withdraw", requestOptions)
-        .then(data => data.json());
+        .then((data) => {return data.json()});
         await result;
         console.log('result', await result.data);
         this.setState({showSpinner: false});
+        //this.props.onRefresh(result.txs, result.data[0].withdrawn, result.data[0].nextWithdraw, 0);
       });
     }
+    async onRefresh(e){}
     
     render(){
             return (
@@ -85,7 +88,6 @@ export default class SignIn extends PureComponent {
                                       <span className="visually-hidden">Loading...</span>
                                     </Spinner>
                                     : <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>}                                 
-
                                 </Card.Body>                                
                             </Card>
                         </Col>
@@ -93,8 +95,9 @@ export default class SignIn extends PureComponent {
                     <Row>
                         <Col>
                             <Card className="Sign-item">
-                              <Card.Title>Deposits Pending To Withdraw</Card.Title>
-                                <Card.Body>
+                              <br/>
+                              <Card.Title style={{paddingLeft: 25}}>Deposits Pending To Withdraw<br/> </Card.Title>
+                                <Card.Body className="hor-flex">                                    
                                     <ComposedChart
                                         width={500}
                                         height={400}
@@ -114,6 +117,7 @@ export default class SignIn extends PureComponent {
                                         <Bar dataKey="amount" barSize={20} fill="#413ea0" />
                                         <Line type="monotone" dataKey="amount" stroke="#ff7300" />
                                      </ComposedChart>
+                                     <Button variant="outline-success" onClick={this.onRefresh.bind(this)}>Refresh</Button>
                                 </Card.Body>
                             </Card>
                         </Col>
