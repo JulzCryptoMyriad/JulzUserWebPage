@@ -55,7 +55,6 @@ export default class SignIn extends PureComponent {
         .then(data => data.json());
         await result;
         console.log('result', await result.data);
-        this.props.onWithdraw(await result.txs, 0,30, await result.total);
         this.setState({showSpinner: false});
       });
     }
@@ -124,8 +123,14 @@ export default class SignIn extends PureComponent {
                         <Card className="Sign-item">
                           <Card.Body>
                             The code to include your widget inside your page is: 
-                            <br/>
+                            <br/>                            
                             <code>{`<iframe src="http://localhost:3000/`+ this.props.userId +`/{USD_Amount to be charge}" ></iframe> `}</code>
+                            <br/><br/>To read the response transaction hash make sure to include in your script the following listener:<br/>
+                            <code>{`<script type="text/javascript">
+                                    window.addEventListener("message", (event) => {
+                                      // Logic after collecting payment
+                                    }, false);
+                                  </script>`}</code>
                           </Card.Body>
                         </Card>
                       </Col>
