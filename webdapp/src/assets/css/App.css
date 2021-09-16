@@ -24,6 +24,7 @@
 }
 
 .App-header {
+  position: relative;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -32,6 +33,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  top:0%;
 }
 
 .App-link {
@@ -54,6 +56,10 @@
   text-align: left;
 }
 
+.Home{
+  margin-top: 0%;
+}
+
 .Sign-item {
   margin-top: 3%;
   align-items: left;
@@ -69,6 +75,7 @@
 .carousel-description{
   color: black;
   background-color: cadetblue;
+  margin-top: 0%;
 }
 
 .footer--pin{
