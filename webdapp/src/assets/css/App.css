@@ -88,3 +88,11 @@
   text-align: center;
   color: honeydew;
 }
+
+
+.hor-flex{
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+}

@@ -53,7 +53,7 @@ function validateCreate(user) {
 }
 
 async function login(user){
-    let txsPending;
+    let txsPending, total;
     const data = await db.query(
         "SELECT *, CAST(abi as CHAR) charABI,Datediff(DATE_ADD(lastWithdraw, INTERVAL 30 DAY),sysdate())  as nextWithdraw FROM  users where email = '"+user.email+"' and password = '"+user.password+"'", 
         [ ]
@@ -90,6 +90,7 @@ async function update(data){
 }
 
 async function withdraw(data){
+  
   const result2 = await db.query(
     "UPDATE users SET withdrawn = withdrawn+"+data.amount+", lastwithdraw = date(sysdate()) Where idusers = "+data.id+"", 
     []
@@ -101,18 +102,34 @@ async function withdraw(data){
     let message =  "There was an error on the update";
 
     if (result2.affectedRows) {
-      message = "All went great on the update";
+      message = "All went great on the update";     
     }
 
-    return login([{idusers: data.id}]);
+    return message;
 
 }
+async function refresh({id}){
+  let txsPending, total;
+  const data = await db.query(
+      "SELECT *, CAST(abi as CHAR) charABI,Datediff(DATE_ADD(lastWithdraw, INTERVAL 30 DAY),sysdate())  as nextWithdraw FROM  users where idusers = "+ id, 
+      [ ]
+  );
+  
 
+  txsPending = await db.query(
+    "select distinct date, amount,hash from transactions where idusers = "+ id+" and withdraw = false", 
+    [ ]
+  );
+  total = await db.query("select Sum(amount) total from transactions where idusers = "+ id+" and withdraw = false group by idusers;",[]);
+  if (total.length <1)total=[{total:0}]
+  
+  return {data, txsPending, total};
+}
 module.exports = {
   getMultiple,
   create,
   login,
   update,
-  withdraw
-
+  withdraw,
+  refresh
 }

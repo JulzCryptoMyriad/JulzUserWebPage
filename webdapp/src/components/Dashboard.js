@@ -19,6 +19,7 @@ export default class SignIn extends PureComponent {
     state = {
       showSpinner: false
     }
+
     async onWithdraw(e){
       e.preventDefault();
       this.setState({showSpinner: true});
@@ -52,11 +53,27 @@ export default class SignIn extends PureComponent {
         }
 
         const result = fetch("/withdraw", requestOptions)
-        .then(data => data.json());
+        .then((data) => {return data.json()});
         await result;
         console.log('result', await result.data);
         this.setState({showSpinner: false});
+        this.onRefresh();
       });
+    }
+
+    async onRefresh(){
+      const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify( {id: this.props.userId})
+      };
+      const result = await fetch("/refresh", requestOptions)
+      .then(data => data.json());
+
+      if(result.data.length > 0){        
+        //get days left before next withdraw
+        this.props.onRefresh(result.txsPending, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total[0],result.data[0].restriction);   
+      }  
     }
     
     render(){
@@ -79,13 +96,12 @@ export default class SignIn extends PureComponent {
                         </Col>
                         <Col>
                             <Card>
-                                <Card.Body>You will be able to withdraw on: {this.props.daysLeft} day(s)
+                                <Card.Body>{this.props.monthly? <p>You will be able to withdraw on {this.props.daysLeft} day(s)</p>:<p></p>}
                                 {this.state.showSpinner?                                    
                                     <Spinner animation="border" role="status">
                                       <span className="visually-hidden">Loading...</span>
                                     </Spinner>
                                     : <Button variant="success" className="Sign-item center" onClick={this.onWithdraw.bind(this)}>Withdraw</Button>}                                 
-
                                 </Card.Body>                                
                             </Card>
                         </Col>
@@ -93,8 +109,9 @@ export default class SignIn extends PureComponent {
                     <Row>
                         <Col>
                             <Card className="Sign-item">
-                              <Card.Title>Deposits Pending To Withdraw</Card.Title>
-                                <Card.Body>
+                              <br/>
+                              <Card.Title style={{paddingLeft: 25}}>Deposits Pending To Withdraw<br/> </Card.Title>
+                                <Card.Body className="hor-flex">                                    
                                     <ComposedChart
                                         width={500}
                                         height={400}
@@ -114,6 +131,7 @@ export default class SignIn extends PureComponent {
                                         <Bar dataKey="amount" barSize={20} fill="#413ea0" />
                                         <Line type="monotone" dataKey="amount" stroke="#ff7300" />
                                      </ComposedChart>
+                                     <Button variant="outline-success" onClick={this.onRefresh.bind(this)}>Refresh</Button>
                                 </Card.Body>
                             </Card>
                         </Col>
