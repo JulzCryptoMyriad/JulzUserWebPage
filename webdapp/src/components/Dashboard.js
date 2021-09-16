@@ -1,5 +1,7 @@
 import '../assets/css/App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import eth from '../assets/imgs/eth.png';
+import dai from '../assets/imgs/dai.png';
 import {Container, Row, Col, Card, Button, Spinner} from 'react-bootstrap';
 import React, { PureComponent } from 'react';
 import {ethers} from 'ethers';
@@ -86,7 +88,7 @@ export default class SignIn extends PureComponent {
                     <Row>
                         <Col>                        
                             <Card>
-                                <Card.Body>You have successfully withdrawn: {this.props.amount}</Card.Body>
+                                <Card.Body>You have successfully withdrawn:<br/><img src={this.props.token === "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"? eth:dai} alt="" height="40"/> {this.props.amount}</Card.Body>
                             </Card>
                         </Col>
                         <Col>

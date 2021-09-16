@@ -21,10 +21,11 @@ class App extends Component{
     amount: 0,//withdrawn amount
     daysLeft : 30,
     total: 0,//inside the contract
-    monthly: true//if restriction about withdraw
+    monthly: true,//if restriction about withdraw
+    token: ""
   }
 
-  onLog = (id, contract, abi, data, amount, daysLeft, total, monthly) => {
+  onLog = (id, contract, abi, data, amount, daysLeft, total, monthly, token) => {
     this.setState({ logged: true })
     this.setState({ userId : id})
     this.setState({ contract : contract})
@@ -34,6 +35,7 @@ class App extends Component{
     this.setState({ daysLeft : daysLeft})
     this.setState({ monthly : monthly})
     this.setState({ total : total[0]})
+    this.setState({ token : token})
   }
 
   onRefresh = (data, amount, daysLeft, total, monthly) => {

@@ -34,7 +34,7 @@ import { Link } from "react-router-dom";
         }else{
             //get days left before next withdraw
             console.log('login',result.data[0]);
-            this.props.onLog(result.data[0].idusers, result.data[0].contractAddress, result.data[0].charABI, result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total,result.data[0].restriction);
+            this.props.onLog(result.data[0].idusers, result.data[0].contractAddress, result.data[0].charABI, result.txs, result.data[0].withdrawn,result.data[0].nextWithdraw, result.total,result.data[0].restriction,result.data[0].withdrawTokenAddress);
             this.props.history.push('/Dashboard');
         }         
       };
