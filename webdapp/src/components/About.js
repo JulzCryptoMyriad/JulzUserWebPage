@@ -15,7 +15,8 @@ export default class Docs extends Component {
                         <Card.Subtitle>For Now</Card.Subtitle>
                         <Card.Text>
                         <br/><br/>
-                        I'm really passionate about building solutions where I see a problem. <br/><br/>                      
+                        I'm really passionate about building solutions where I see a problem. <br/><br/> 
+                        This is an open source project so feel free to contribute following the guidelines on each repo!                     
                         </Card.Text>
                     </Card.Body>
                     <ListGroup className="list-group-flush">
