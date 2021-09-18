@@ -19,3 +19,4 @@ Follow these steps:
 You must run both the front end and the back end as follows:
 * Front end:   ```npm start```
 * Back End: ```nodemon server/server.js```
+Make sure to run a local fork of maiinet to ensure all external contracts will be found. You can do so with `npx hardhat node --fork url`
