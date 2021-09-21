@@ -1,5 +1,5 @@
 import '../assets/css/App.css';
-import {Form, FloatingLabel, Row, Col, Button, Alert, Placeholder} from 'react-bootstrap';
+import {Form, FloatingLabel, Row, Col, Button, Alert, Placeholder, Overlay} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
@@ -14,8 +14,9 @@ class SignUp extends Component {
         token: "",
         treasury: "",
         checked: 0,
-        contractAddress: ""
-
+        contractAddress: "",
+        show: false,
+        target : {}
       };
     
       async onSubmit(e) {
@@ -28,17 +29,18 @@ class SignUp extends Component {
             body: JSON.stringify( {email: this.state.email, password: this.state.password, withdrawTokenAddress: this.state.token, treasury: this.state.treasury, checked: this.state.checked, contractAddress: this.state.contractAddress })
         };
         let userid;
-        const result = fetch("/create", requestOptions)
+        const result = await fetch("/create", requestOptions)
         .then(async (res) => await res.json())
-        .then((data) =>  {console.log('res',data);
-            userid = data.id;  
+        .then((data) =>  {
+            console.log('res',data);
+            if(data){
+                userid = data.id;  
+            }
         });
-        await result;
 
-        if(result){
+        if(userid){
             //CONTRACT DEPLOYMENT
             const provider = new ethers.providers.Web3Provider(window.ethereum);
-            console.log('provider', provider);
             await window.ethereum.request({ method: 'eth_requestAccounts' });
             const signer = provider.getSigner();
             await signer;
@@ -61,7 +63,8 @@ class SignUp extends Component {
             this.props.onLog(userid,contract.address,contract.abi,[],0,30,[{total:0}],this.state.checked,this.state.token);
             this.props.history.push('/Dashboard');
         }else{
-            console.log('not login');
+            
+            this.setState({ show: true })
             e.stopPropagation();
             e.nativeEvent.stopImmediatePropagation();
         } 
@@ -117,7 +120,23 @@ class SignUp extends Component {
                 </Alert>
                 <Form.Group as={Row} className="mb-3 Sign-item">
                     <Col sm={{ span: 10, offset: 2 }}>
-                    <Button type="submit"  onClick={this.onSubmit.bind(this)} className="center">Sign up</Button>
+                    <Button type="submit"  onClick={this.onSubmit.bind(this)} className="center" ref={this.state.target}>Sign up</Button>
+                    <Overlay target={this.state.target.current} show={this.state.show} placement="right">
+                        {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                        <div
+                            {...props}
+                            style={{
+                            backgroundColor: 'rgba(255, 100, 100, 0.85)',
+                            padding: '2px 10px',
+                            color: 'white',
+                            borderRadius: 3,
+                            ...props.style,
+                            }}
+                        >
+                            Sign Up Failed
+                        </div>
+                        )}
+                    </Overlay>
                     </Col>
                 </Form.Group>
                 </Form>

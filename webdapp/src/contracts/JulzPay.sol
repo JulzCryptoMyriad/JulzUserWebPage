@@ -127,9 +127,8 @@ contract JulzPay{
     function swap(address _token, bytes memory path, uint amount) public returns(uint256 result){
 
         IERC20 erc20 =  IERC20(_token);
-        //if(!(_token == WETH_ADD)){
-            erc20.approve(address(router), amount);
-        //}
+        erc20.approve(address(router), amount);
+        
 
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams(
             path, address(this), block.timestamp,  amount, 0
