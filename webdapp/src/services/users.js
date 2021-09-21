@@ -13,7 +13,8 @@ async function getMultiple(){
 }
 
 async function create(user){
-    validateCreate(user);
+    let validations = await validateCreate(user);
+    if (validations.length > 0) return null;
   
     const result = await db.query(
       "INSERT INTO users (email, password, contractAddress, restriction, treasuryAddress, withdrawTokenAddress,lastWithdraw, withdrawn) VALUES ('"+user.email+"', '"+user.password+"', '"+user.contractAddress+"', '"+user.checked+"', '"+user.treasury+"', '"+user.withdrawTokenAddress+"',sysdate(), 0)", 
@@ -29,7 +30,7 @@ async function create(user){
     return {message: message,  id: result.insertId};
 }
 
-function validateCreate(user) {
+async function validateCreate(user) {
     let messages = [];
     
     if (!user) {
@@ -50,6 +51,14 @@ function validateCreate(user) {
   
       throw error;
     }
+    const data = await db.query(
+      "SELECT * FROM  users where email = '"+user.email+"'", 
+      [ ]
+    );
+    if(data.length > 0){
+      messages.push('user exists already');
+    }
+    return messages;
 }
 
 async function login(user){
