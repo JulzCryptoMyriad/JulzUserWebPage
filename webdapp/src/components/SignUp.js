@@ -141,7 +141,7 @@ class SignUp extends Component {
                 </Form.Group>
                 </Form>
                 <Placeholder xs={12} size="xs" />
-                <p className="center">Already a memeber? <Link to="/SignIn">Sign In</Link></p>
+                <p className="center">Already a member? <Link to="/SignIn">Sign In</Link></p>
             </div>
         )
     }

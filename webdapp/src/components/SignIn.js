@@ -79,7 +79,7 @@ import { Link } from "react-router-dom";
                     </Overlay>
                 </Form>
                 <Placeholder xs={12} size="xs" />
-                <p className="center"> Not a memeber? <Link to="/SignUp">Sign Up</Link></p>
+                <p className="center"> Not a member? <Link to="/SignUp">Sign Up</Link></p>
             </div>
         )
     }
