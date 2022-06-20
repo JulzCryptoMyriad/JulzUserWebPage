@@ -104,7 +104,6 @@ contract JulzPay{
         if(!(WETH_ADD == _token)){
             IERC20 depositor =  IERC20(_token);            
             depositor.transferFrom(msg.sender, address(this), _amount);
-            console.log(depositor.balanceOf(address(this)));
         }
 
         if(!(withdrawToken == _token)){
