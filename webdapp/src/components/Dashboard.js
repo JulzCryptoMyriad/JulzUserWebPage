@@ -41,7 +41,6 @@ export default class SignIn extends PureComponent {
         const tx = await contract.connect(signer).withdraw(ethers.utils.parseEther(this.props.total.total));
         console.log('tx:',tx);
       }catch(err){
-        console.log(err);
         this.setState({showSpinner: false});
       }
 

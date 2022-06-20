@@ -263,12 +263,11 @@ describe("JulzPay eth preference", function() {
                 addr1 = await signer1.getAddress();
                 await getERC20(dai, [addr1], true);
                 await dai.connect(depositorSigner).approve(contract.address, deposit);   
-                try{
-                    console.log('about to deposit', Number(deposit));
+                try {
                     const tx = await contract.connect(depositorSigner).deposit(deposit, dai.address, path);
                     await tx.wait();
                     
-                } catch(err){
+                } catch(err) {
                     console.log("Error:",err);
                 }                             
                 currentDepositBalance = await dai.balanceOf(contract.address);
