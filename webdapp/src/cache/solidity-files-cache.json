@@ -131,8 +131,8 @@
       ]
     },
     "/Users/julissadantes-castillo/Documents/JulzUserWebPage/webdapp/src/contracts/JulzPay.sol": {
-      "lastModificationDate": 1655754657486,
-      "contentHash": "f9654b896dbbd4f9aac721d8ca9258e5",
+      "lastModificationDate": 1681083354971,
+      "contentHash": "2c9d43dbcdc7822818044a271976ed82",
       "sourceName": "src/contracts/JulzPay.sol",
       "solcConfig": {
         "version": "0.7.5",

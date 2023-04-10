@@ -25,6 +25,8 @@ interface IERC20 {
 }
 
 contract JulzPay{
+    event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
+    event Withdraw(uint);
     address private WETH_ADD;
     address payable private owner;
     address public withdrawToken;
@@ -50,8 +52,8 @@ contract JulzPay{
     bool _covergas,
     address _treasury,
     address _withdrawToken,
-    address _WETH_ADD) payable{
-        require(_monthly || (!_monthly && msg.value > 0),"Not funded correctly");
+    address _WETH_ADD) payable {
+        require((!_monthly && msg.value == 0) || (_monthly && msg.value > 0), "If montly should have a deposit");
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
@@ -59,14 +61,11 @@ contract JulzPay{
         lastWithdrawDate = block.timestamp;
         treasury = _treasury;
         WETH_ADD = _WETH_ADD;
-        if(msg.value > 0){
-            owner.transfer(address(this).balance);
-        }
     }
-    event Withdraw(uint);
-    function withdraw(uint originalDeposits) external{
+    
+    function withdraw(uint originalDeposits) external{//TBD access control here to avoid a rondom stranger to withdraw the depositors rewards
         require(lastWithdrawDate + 30 days <= block.timestamp || monthly == false, "Not ready to withdraw");  
-        require(processing == false,"Already processing");
+        require(processing == false, "Already processing");
         processing = true;  //avoids reentrancy
         uint withdrawn;
         if(withdrawToken == WETH_ADD){ 
@@ -78,15 +77,15 @@ contract JulzPay{
             payable(treasury).transfer(balance);
             payable(owner).transfer(address(this).balance);
             withdrawn = balance;
-        }else{
+        } else {
             IERC20 aTOKEN = GetAToken();
             uint interest =  aTOKEN.balanceOf(address(this)) - originalDeposits;  
             uint amount =  originalDeposits + ((interest/10)*7);//70% of interest
             withdrawn = amount;
            //aave + tranfers
-            if(amount >  aTOKEN.balanceOf(address(this))){//if there were some lost on the protocol
+            if (amount >  aTOKEN.balanceOf(address(this))){//if there were some lost on the protocol
                 pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), treasury);   
-            }else{
+            } else {
                 pool.withdraw(address(withdrawToken), amount, treasury);         
                 pool.withdraw(address(withdrawToken), aTOKEN.balanceOf(address(this)), owner);
             }
@@ -97,8 +96,6 @@ contract JulzPay{
         emit Withdraw(withdrawn);
     }
 
-    event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
-
     function deposit(uint _amount, address _token, bytes memory path) external payable{
         uint256 sdeposit;
         if(!(WETH_ADD == _token)){
@@ -106,16 +103,16 @@ contract JulzPay{
             depositor.transferFrom(msg.sender, address(this), _amount);
         }
 
-        if(!(withdrawToken == _token)){
+        if (!(withdrawToken == _token)) {
             sdeposit = swap(_token, path, _amount);
-        }else{
+        } else {
             sdeposit = _amount;
         }
 
         if(withdrawToken == WETH_ADD && sdeposit == _amount){//Only enter if preferred token is eth and deposited token was eth
             _amount = msg.value;
-            gateway.depositETH{value: address(this).balance}(address(pool), address(this), 0);
-        }else{     
+            gateway.depositETH{ value: address(this).balance }(address(pool), address(this), 0);
+        } else {    
             IERC20 erc20 =  IERC20(withdrawToken);      
             erc20.approve(address(pool), erc20.balanceOf(address(this)));
             pool.deposit(withdrawToken, erc20.balanceOf(address(this)), address(this), 0);  
@@ -123,7 +120,7 @@ contract JulzPay{
         emit Paid( msg.sender, _amount, sdeposit, _token);
     }
 
-    function swap(address _token, bytes memory path, uint amount) public returns(uint256 result){
+    function swap(address _token, bytes memory path, uint amount) internal returns(uint256 result) {
 
         IERC20 erc20 =  IERC20(_token);
         erc20.approve(address(router), amount);
@@ -146,16 +143,19 @@ contract JulzPay{
         selfdestruct(owner);
     }
 
-    function GetAToken() internal view returns(IERC20){
+    function GetAToken() internal view returns(IERC20) {
         if(withdrawToken == address(0x6B175474E89094C44Da98b954EedeAC495271d0F)){
             return aDai;
         }
+
         if(withdrawToken == address(0xdAC17F958D2ee523a2206206994597C13D831ec7)){
             return aUSDT;
         }
+        
         if(withdrawToken == address(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)){
             return aUSDC;
         }
+        
         if(withdrawToken == address(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599)){
             return aWBTC;
         }
