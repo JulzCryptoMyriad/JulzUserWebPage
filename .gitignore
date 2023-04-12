@@ -1,6 +1,6 @@
 # build info
-webdapp/src/srtifacts/build-info
-
+webdapp/src/artifacts
+webdapp/src/cache
 # Logs
 logs
 *.log

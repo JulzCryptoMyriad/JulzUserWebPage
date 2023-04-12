@@ -5,7 +5,7 @@ Web site for widget clients to register and mange their account
 Follow these steps:
 1. Clone this repo
 2.  ```cd webdapp```
-3.  Install dependencies: ```npm i```
+3. Install dependencies: ```npm i```
 4. Set up a MySQL instance with the script on `./migrations/`
 5. Set up webdapp/.env file with the following keys: 
     `FORKING_URL`, 
