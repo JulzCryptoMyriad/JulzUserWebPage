@@ -4,8 +4,6 @@ pragma abicoder v2;
 import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
 import "@uniswap/v3-core/contracts/interfaces/IERC20Minimal.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
-import "@uniswap/v3-periphery/contracts/libraries/BytesLib.sol";
-import '@uniswap/v3-core/contracts/libraries/TickMath.sol';
 import "./ILendingPool.sol";
 import "./IWETHGateway.sol";
 import "hardhat/console.sol";
@@ -26,7 +24,6 @@ interface IERC20 {
 }
 
 contract JulzPay {
-      using BytesLib for bytes;
     event Paid(address sender, uint256 amountReceived, uint256 amountDeposited, address token);
     event Withdraw(uint);
     address private immutable WETH_ADD;
@@ -81,7 +78,7 @@ contract JulzPay {
 
         // AAVE
         //Only enter if preferred token is eth and deposited token was eth
-        if(withdrawToken == WETH_ADD && sdeposit == _amount){
+        if(withdrawToken == WETH_ADD && _token == WETH_ADD){
             _amount = msg.value;
             gateway.depositETH{ value: address(this).balance }(address(pool), address(this), 0);
         } else {   

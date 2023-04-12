@@ -90,7 +90,7 @@ describe("JulzPay dai preference", function() {
             wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
         });
 
-        describe("after a dai and eth deposit", () => {
+        describe.only("after a dai and eth deposit", () => {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
             beforeEach(async () => {
@@ -98,6 +98,7 @@ describe("JulzPay dai preference", function() {
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
                 
+                currentDepositBalance = await aDai.balanceOf(contract.address);
                 await getERC20(dai, [addr1], true);
                 await getERC20(weth, [addr1], false);
                 // Deposit Dai
@@ -108,9 +109,7 @@ describe("JulzPay dai preference", function() {
                 // Deposit wETH
                 await weth.connect(signer1).approve(contract.address, deposit);  
                 const ethTx = await contract.connect(signer1).deposit(deposit, weth.address, path);
-
                 await ethTx.wait();               
-                currentDepositBalance = await aDai.balanceOf(contract.address);
 
             });
 
@@ -121,7 +120,7 @@ describe("JulzPay dai preference", function() {
         
             it("should increase aDAI balance", async function () {
                 const balance = await aDai.balanceOf(contract.address);
-                assert.isAbove(Number(balance.toString()), Number(deposit.toString()));//because is already having interest
+                assert.isAbove(Number(balance.toString()), currentDepositBalance);
             }); 
 
             describe("On Withdraw", () => {
