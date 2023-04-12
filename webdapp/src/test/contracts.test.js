@@ -81,7 +81,6 @@ describe("JulzPay dai preference", function() {
     describe("Fund Single Depositor", function () {
         let weth, dai, usdc, tether, wbtc;
         before(async () => {
-            console.log("este before");
             dai = await ethers.getContractAt("IERC20Minimal", DAI_ADDR);
             aDai = await ethers.getContractAt("IERC20Minimal", "0x028171bCA77440897B824Ca71D1c56caC55b68A3");
             aWETH = await ethers.getContractAt("IERC20", "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e");
@@ -89,27 +88,30 @@ describe("JulzPay dai preference", function() {
             usdc = await ethers.getContractAt("IERC20Minimal", USDC_ADDR);
             weth = await ethers.getContractAt("IERC20Minimal", WETH_ADDR);
             wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
-            console.log("este done");
         });
 
         describe("after a dai and eth deposit", () => {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
             beforeEach(async () => {
-                console.log("este otro before");
                 const path = encodePath([WETH_ADDR, DAI_ADDR], [3000]);
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
-                await getERC20(dai, [addr1], true);
-                await dai.connect(depositorSigner).approve(contract.address, deposit);   
                 
-                const tx = await contract.connect(depositorSigner).deposit(deposit, dai.address, path);
+                await getERC20(dai, [addr1], true);
+                await getERC20(weth, [addr1], false);
+                // Deposit Dai
+                await dai.connect(signer1).approve(contract.address, deposit);   
+                const tx = await contract.connect(signer1).deposit(deposit, dai.address, path);
                 await tx.wait();
-                const ethTx = await contract.connect(depositorSigner).deposit(deposit, WETH_ADDR, path);
-                await ethTx.wait();
-                                             
-                currentDepositBalance = await dai.balanceOf(contract.address);
-                console.log("este otro done");
+
+                // Deposit wETH
+                await weth.connect(signer1).approve(contract.address, deposit);  
+                const ethTx = await contract.connect(signer1).deposit(deposit, weth.address, path);
+
+                await ethTx.wait();               
+                currentDepositBalance = await aDai.balanceOf(contract.address);
+
             });
 
             it("should not hold DAI", async function () {
@@ -117,10 +119,11 @@ describe("JulzPay dai preference", function() {
                 assert.equal(Number(balance).toString(), "0");
             });
         
-            it("should hold aDAI", async function () {
-                const abalance = await aDai.balanceOf(contract.address);
-                assert.isAbove(Number(abalance.toString()), Number(deposit.toString()));//because is already having interest
+            it("should increase aDAI balance", async function () {
+                const balance = await aDai.balanceOf(contract.address);
+                assert.isAbove(Number(balance.toString()), Number(deposit.toString()));//because is already having interest
             }); 
+
             describe("On Withdraw", () => {
                 let dai;
                 beforeEach(async () => {
@@ -136,14 +139,14 @@ describe("JulzPay dai preference", function() {
         
                 it("should withdraw if less than a month has passed", async () => {
                    
-                    const thirtynDays = 10 * 24 * 60 * 60;
+                    const tenDays = 10 * 24 * 60 * 60;
                     await hre.network.provider.request({
                         method: "evm_increaseTime",
-                        params: [thirtynDays]
+                        params: [tenDays]
                     });
                     const ownerBalanceBefore = await dai.balanceOf(owner.getAddress());                    
                     const before = await dai.balanceOf(treasury.getAddress()); 
-                    const approve = await contract.withdraw(deposit);
+                    await contract.withdraw(deposit);
                    
                     const after = await dai.balanceOf(treasury.getAddress());
                     const ownerBalanceAfter = await dai.balanceOf(owner.getAddress());
@@ -159,16 +162,14 @@ describe("JulzPay dai preference", function() {
 
         describe("after a eth deposit",() => {
             const deposit = ethers.utils.parseEther("0.1");
-            let signer1, addr1, currentDepositBalance = 0;
+            let signer1;
             beforeEach(async () => {
                 const path = encodePath([WETH_ADDR, DAI_ADDR], [3000]);
                 signer1 = await ethers.provider.getSigner(0);
-                try{
-                    const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR, path,{value: deposit});
-                    const receipt = await tx.wait();
-                }catch(err){
-                    console.log('on eth deposit', err);
-                }
+                
+                const tx = await contract.connect(signer1).deposit(deposit, WETH_ADDR, path,{value: deposit});
+                await tx.wait();
+                
             });
 
             it("should not have an ether balance", async function() {
@@ -242,22 +243,18 @@ describe("JulzPay eth preference", function() {
             wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
         });
         describe("after a dai deposit", () => {
-            const deposit = ethers.utils.parseEther("4");
-            let signer1, addr1, currentDepositBalance;
+            const deposit = ethers.utils.parseEther("1");
+            let signer1, addr1, prevBalance;
             beforeEach(async () => {
                 const path = encodePath([DAI_ADDR, WETH_ADDR], [3000]);
                 signer1 = await ethers.provider.getSigner(0);
                 addr1 = await signer1.getAddress();
+
+                prevBalance = await aWETH.balanceOf(contract.address); 
                 await getERC20(dai, [addr1], true);
-                await dai.connect(depositorSigner).approve(contract.address, deposit);   
-                try {
-                    const tx = await contract.connect(depositorSigner).deposit(deposit, dai.address, path);
-                    await tx.wait();
-                    
-                } catch(err) {
-                    console.log("Error:",err);
-                }                             
-                currentDepositBalance = await dai.balanceOf(contract.address);
+                await dai.connect(signer1).approve(contract.address, deposit);   
+                const tx = await contract.connect(signer1).deposit(deposit, dai.address, path);
+                await tx.wait();                                       
             });
 
             it("should not hold DAI", async function () {
@@ -265,16 +262,14 @@ describe("JulzPay eth preference", function() {
                 assert.equal(Number(balance).toString(), "0");
             });
         
-            it("should not hold aWeth", async function () {
-                const abalance = await aWETH.balanceOf(contract.address);
-                console.log(abalance);
-                assert.equal(Number(abalance.toString()), 0, "AAve didnt returned the aToken");
+            it("should increase aWeth balance", async function () {
+                const balance = await aWETH.balanceOf(contract.address);
+                assert.isBelow(prevBalance, Number(balance.toString()));
             }); 
 
-            it("should hold aDai", async function () {
-                const abalance = await aDai.balanceOf(contract.address);
-                console.log(abalance);
-                assert.equal(Number(abalance.toString()), 0, "AAve didnt returned the aToken");
+            it("should not hold aDai", async function () {
+                const balance = await aDai.balanceOf(contract.address);
+                assert.equal(Number(balance.toString()), 0);
             }); 
           
         });
@@ -327,10 +322,10 @@ describe("JulzPay eth preference", function() {
         
                 it("should withdraw if more than a month has passed", async () => {
                    
-                    const thirtynDays = 30 * 24 * 60 * 60;
+                    const thirtyDays = 30 * 24 * 60 * 60;
                     await hre.network.provider.request({
                         method: "evm_increaseTime",
-                        params: [thirtynDays]
+                        params: [thirtyDays]
                     });
                     const before = await ethers.provider.getBalance(await treasury.getAddress());
                     const approve = await contract.withdraw(deposit);
