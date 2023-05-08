@@ -21,3 +21,5 @@ You must run both the front end and the back end as follows:
 * Front end:   ```npm start```
 * Back End: ```nodemon server/server.js```
 Make sure to run a local fork of mainnet to ensure all external contracts will be found. You can do so with `npx hardhat node --fork url`
+
+--TODO delete top folder so project is just the webdapp folder
