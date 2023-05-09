@@ -52,7 +52,7 @@ contract JulzPay {
     address _treasury,
     address _withdrawToken,
     address _WETH_ADD) payable {
-        require((!_monthly && msg.value == 0) || (_monthly && msg.value > 0), "If montly should have a deposit");
+        require(!_monthly || (_monthly && msg.value > 0), "If montly should have a deposit");
         owner = _owner;
         monthly = _monthly;
         covergas = _covergas;
@@ -60,6 +60,11 @@ contract JulzPay {
         lastWithdrawDate = block.timestamp;
         treasury = _treasury;
         WETH_ADD = _WETH_ADD;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Invalid caller");
+        _;
     }
 
     function deposit(uint _amount, address _token, bytes memory path) external payable{
@@ -108,7 +113,7 @@ contract JulzPay {
     }
 
     //TBD originalDeposits should not be a parameter should be computed at deposit
-    function withdraw(uint originalDeposits) external {//TBD access control here to avoid a random stranger to withdraw the owners rewards
+    function withdraw() external onlyOwner {
         require(lastWithdrawDate + 30 days <= block.timestamp || monthly == false, "Not ready to withdraw");  
         require(processing == false, "Already processing");
         processing = true;  //avoids reentrancy

@@ -90,7 +90,7 @@ describe("JulzPay dai preference", function() {
             wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
         });
 
-        describe.only("after a dai and eth deposit", () => {
+        describe("after a dai and eth deposit", () => {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
             beforeEach(async () => {
