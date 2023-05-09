@@ -1,4 +1,4 @@
-const { assert } = require("chai");
+const { expect } = require("chai");
 
 const WETH_ADDR = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
 const DAI_ADDR = "0x6b175474e89094c44da98b954eedeac495271d0f";
@@ -45,19 +45,15 @@ describe("JulzPay security", function() {
         
     });
 
-    it.only("Only owner can withdraw", async function() {
+    it("Only owner can withdraw", async function() {
         const thirtyDays = 30 * 24 * 60 * 60;
         await hre.network.provider.request({
             method: "evm_increaseTime",
             params: [thirtyDays]
         });
-        const before = await ethers.provider.getBalance(await attacker.getAddress());;
-        const approve = await contract.connect(attacker).withdraw(deposit);
-        const after = await ethers.provider.getBalance(await attacker.getAddress());
-        const balance = await ethers.provider.getBalance(contract.address);
+
+        await expect(contract.connect(attacker).withdraw()).to.be.revertedWith("Invalid caller");
         
-        assert.isAbove(balance, 0, "Funds are not on the contract");  
-        assert.equal(after, before, "should not have withdrawn");
     });
     
 });

@@ -34,6 +34,7 @@ contract JulzPay {
     uint256 public lastWithdrawDate;
     address public treasury;    
     bool private processing;
+    uint256 originalFunds;
     ISwapRouter router = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
     // the mainnet AAVE v2 lending pool
     ILendingPool pool = ILendingPool(0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9);
@@ -67,7 +68,7 @@ contract JulzPay {
         _;
     }
 
-    function deposit(uint _amount, address _token, bytes memory path) external payable{
+    function deposit(uint _amount, address _token, bytes memory path) external payable {
         uint256 sdeposit;
         if(!(WETH_ADD == _token)){
             IERC20 depositor =  IERC20(_token);            
@@ -91,6 +92,7 @@ contract JulzPay {
             erc20.approve(address(pool), erc20.balanceOf(address(this)));
             pool.deposit(withdrawToken, erc20.balanceOf(address(this)), address(this), 0);  
         }
+        originalFunds += sdeposit;
         emit Paid( msg.sender, _amount, sdeposit, _token);
     }
 
@@ -112,15 +114,15 @@ contract JulzPay {
         result = router.exactInput{ value:amount }(params);
     }
 
-    //TBD originalDeposits should not be a parameter should be computed at deposit
     function withdraw() external onlyOwner {
         require(lastWithdrawDate + 30 days <= block.timestamp || monthly == false, "Not ready to withdraw");  
         require(processing == false, "Already processing");
         processing = true;  //avoids reentrancy
+        uint256 deposits = originalFunds;
         uint withdrawn;
         if(withdrawToken == WETH_ADD){ 
-            uint interest =  aWETH.balanceOf(address(this)) - originalDeposits;  
-            uint balance =  originalDeposits + ((interest/10)*7);//70% of interest
+            uint interest =  aWETH.balanceOf(address(this)) - deposits;  
+            uint balance =  deposits + ((interest/10)*7);//70% of interest
             // Withraw from AAVE
             aWETH.approve(address(gateway), aWETH.balanceOf(address(this)));
             gateway.withdrawETH(address(pool), aWETH.balanceOf(address(this)), address(this));
@@ -130,8 +132,8 @@ contract JulzPay {
             withdrawn = balance;
         } else {
             IERC20 aTOKEN = GetAToken();
-            uint interest =  aTOKEN.balanceOf(address(this)) - originalDeposits;  
-            uint amount =  originalDeposits + ((interest/10)*7);//70% of interest
+            uint interest =  aTOKEN.balanceOf(address(this)) - deposits;  
+            uint amount =  deposits + ((interest/10)*7);//70% of interest
             withdrawn = amount;
            // Withraw from AAVE
             if (amount >  aTOKEN.balanceOf(address(this))){//if there were some lost on the protocol
@@ -142,7 +144,8 @@ contract JulzPay {
             }
         }         
 
-        lastWithdrawDate = block.timestamp;        
+        lastWithdrawDate = block.timestamp;   
+        originalFunds -= deposits;     
         processing = false;
         emit Withdraw(withdrawn);
     }
