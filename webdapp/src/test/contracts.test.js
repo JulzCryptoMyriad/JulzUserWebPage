@@ -90,7 +90,7 @@ describe("JulzPay dai preference", function() {
             wbtc = await ethers.getContractAt("IERC20Minimal", WBTC_ADDR);
         });
 
-        describe.only("after a dai and eth deposit", () => {
+        describe("after a dai and eth deposit", () => {
             const deposit = ethers.utils.parseEther("1");
             let signer1, addr1, currentDepositBalance;
             beforeEach(async () => {
@@ -145,7 +145,7 @@ describe("JulzPay dai preference", function() {
                     });
                     const ownerBalanceBefore = await dai.balanceOf(owner.getAddress());                    
                     const before = await dai.balanceOf(treasury.getAddress()); 
-                    await contract.withdraw(deposit);
+                    await contract.withdraw();
                    
                     const after = await dai.balanceOf(treasury.getAddress());
                     const ownerBalanceAfter = await dai.balanceOf(owner.getAddress());
@@ -311,7 +311,7 @@ describe("JulzPay eth preference", function() {
                 it("should revert if less than a month has passed", async () => {
                     let ex;
                     try {
-                        await contract.connect(treasury).withdraw(deposit);
+                        await contract.connect(treasury).withdraw();
                     }
                     catch (_ex) {
                         ex = _ex;
@@ -327,7 +327,7 @@ describe("JulzPay eth preference", function() {
                         params: [thirtyDays]
                     });
                     const before = await ethers.provider.getBalance(await treasury.getAddress());
-                    const approve = await contract.withdraw(deposit);
+                    const approve = await contract.withdraw();
                     const after = await ethers.provider.getBalance(await treasury.getAddress());
                     const balance = await ethers.provider.getBalance(contract.address);
                     
